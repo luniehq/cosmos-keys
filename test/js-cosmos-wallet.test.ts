@@ -144,11 +144,9 @@ describe(`Signing`, () => {
 
     vectors.forEach(({ signature, sequence, account_number, publicKey }) =>
       expect(
-        createSignature(signature, sequence, account_number, publicKey)
+        createSignature(signature, publicKey)
       ).toMatchObject({
         signature: signature,
-        account_number,
-        sequence,
         pub_key: {
           type: `tendermint/PubKeySecp256k1`,
           value: publicKey,
@@ -220,9 +218,7 @@ describe(`Signing`, () => {
         })
         expect(sigObject).toEqual({
           signature: expectedSignature,
-          pub_key: expectedPubKey,
-          sequence,
-          account_number
+          pub_key: expectedPubKey
         })
       }
     )

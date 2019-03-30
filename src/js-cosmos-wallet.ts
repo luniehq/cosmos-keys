@@ -116,7 +116,7 @@
       amount: jsonTx.fee.amount || [],
       gas: jsonTx.fee.gas
     }
-  
+
     return JSON.stringify(
       prepareSignBytes({
         fee,
@@ -138,32 +138,25 @@
   
   export function createSignature(
     signature: any,
-    sequence: any,
-    account_number: any,
     publicKey: any
   ) {
     return {
       signature: signature.toString(`base64`),
-      account_number,
-      sequence,
       pub_key: {
         type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
         value: publicKey.toString(`base64`)
       }
     }
   }
-  
+
   // main function to sign a jsonTx using the local keystore wallet
   // returns the complete signature object to add to the tx
   export function sign(jsonTx: any, wallet: any, requestMetaData: any) {
-    const { sequence, account_number } = requestMetaData
     const signMessage = createSignMessage(jsonTx, requestMetaData)
     const signatureBuffer = signWithPrivateKey(signMessage, wallet.privateKey)
     const pubKeyBuffer = Buffer.from(wallet.publicKey, `hex`)
     return createSignature(
       signatureBuffer,
-      sequence,
-      account_number,
       pubKeyBuffer
     )
   }
