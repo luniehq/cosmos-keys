@@ -1,178 +1,211 @@
-  // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-  // import "core-js/fn/array.find"
-  // ...
-  const bip39 = require(`bip39`)
-  const bip32 = require(`bip32`)
-  const bech32 = require(`bech32`)
-  const secp256k1 = require(`secp256k1`)
-  const sha256 = require("crypto-js/sha256")
-  const ripemd160 = require("crypto-js/ripemd160")
-  const CryptoJS = require("crypto-js")
-  
-  const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
-  
-  const standardRandomBytesFunc = (x: any) => CryptoJS.lib.WordArray.random(x).toString()
-  
-  export function generateWalletFromSeed(mnemonic: any) {
-    const masterKey = deriveMasterKey(mnemonic)
-    const { privateKey, publicKey } = deriveKeypair(masterKey)
-    const cosmosAddress = createCosmosAddress(publicKey)
-    return {
-      privateKey: privateKey.toString(`hex`),
-      publicKey: publicKey.toString(`hex`),
-      cosmosAddress
+// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
+// import "core-js/fn/array.find"
+// ...
+import bip39 from `bip39`
+import bip32 from `bip32`
+import bech32 from `bech32`
+import secp256k1 from `secp256k1`
+import CryptoJS, { SHA256, RIPEMD160 } from 'crypto-js'
+
+const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
+
+// The CryptoJS random bytes function should not be used in production, as it is not cryptographically safe
+export function randomBytes(size: number): Buffer {
+  let hexString = ''
+  /* istanbul ignore if: not testable on node */
+  if (window.crypto) {
+    let keyContainer = new Uint32Array(size / 4)
+    keyContainer = window.crypto.getRandomValues(keyContainer)
+    for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
+      hexString += keyContainer[keySegment].toString(16) // Convert int to hex
     }
+  } else {
+    hexString = CryptoJS.lib.WordArray.random(size).toString()
   }
-  
-  export function generateSeed(randomBytesFunc = standardRandomBytesFunc) {
-    const randomBytes = Buffer.from(randomBytesFunc(32), `hex`)
-    if (randomBytes.length !== 32) throw Error(`Entropy has incorrect length`)
-    const mnemonic = bip39.entropyToMnemonic(randomBytes.toString(`hex`))
-  
-    return mnemonic
+  return Buffer.from(hexString, 'hex')
+}
+
+export function getWalletFromSeed(mnemonic: string): Wallet {
+  const masterKey = deriveMasterKey(mnemonic)
+  const { privateKey, publicKey } = deriveKeypair(masterKey)
+  const cosmosAddress = getCosmosAddress(publicKey.toString('hex'))
+  return {
+    privateKey,
+    publicKey,
+    cosmosAddress
   }
-  
-  export function generateWallet(randomBytesFunc = standardRandomBytesFunc) {
-    const mnemonic = generateSeed(randomBytesFunc)
-    return generateWalletFromSeed(mnemonic)
+}
+
+export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes): string {
+  const entropy = randomBytesFunc(32)
+  if (entropy.length !== 32) throw Error(`Entropy has incorrect length`)
+  const mnemonic = bip39.entropyToMnemonic(entropy.toString('hex'))
+
+  return mnemonic
+}
+
+export function getWallet(randomBytesFunc: (size: number) => Buffer = randomBytes): Wallet {
+  const mnemonic = getSeed(randomBytesFunc)
+  return getWalletFromSeed(mnemonic)
+}
+
+// NOTE: this only works with a compressed public key (33 bytes)
+export function getCosmosAddress(publicKey: string): string {
+  const message = CryptoJS.enc.Hex.parse(publicKey)
+  const address = RIPEMD160(SHA256(message)).toString()
+  const cosmosAddress = bech32ify(address, `cosmos`)
+
+  return cosmosAddress
+}
+
+function deriveMasterKey(mnemonic: string): BIP32 {
+  // throws if mnemonic is invalid
+  bip39.validateMnemonic(mnemonic)
+
+  const seed = bip39.mnemonicToSeed(mnemonic)
+  const masterKey = bip32.fromSeed(seed)
+  return masterKey
+}
+
+function deriveKeypair(masterKey: BIP32): KeyPair {
+  const cosmosHD = masterKey.derivePath(hdPathAtom)
+  const privateKey = cosmosHD.privateKey
+  const publicKey = secp256k1.publicKeyget(privateKey, true)
+
+  return {
+    privateKey,
+    publicKey
   }
-  
-  // NOTE: this only works with a compressed public key (33 bytes)
-  export function createCosmosAddress(publicKey: any) {
-    const message = CryptoJS.enc.Hex.parse(publicKey.toString(`hex`))
-    const hash = ripemd160(sha256(message)).toString()
-    const address = Buffer.from(hash, `hex`)
-    const cosmosAddress = bech32ify(address, `cosmos`)
-  
-    return cosmosAddress
+}
+
+// converts a string to a bech32 version of that string which shows a type and has a checksum
+function bech32ify(address: string, prefix: string) {
+  const words = bech32.toWords(address)
+  return bech32.encode(prefix, words)
+}
+
+// Signbytes need to be deterministic, therefor we need to sort the properties
+// By convention also empty properties get removed
+export function prepareSignBytes(json: any): object {
+  if (Array.isArray(json)) {
+    return json.map(prepareSignBytes)
   }
-  
-  function deriveMasterKey(mnemonic: any) {
-    // throws if mnemonic is invalid
-    bip39.validateMnemonic(mnemonic)
-  
-    const seed = bip39.mnemonicToSeed(mnemonic)
-    const masterKey = bip32.fromSeed(seed)
-    return masterKey
+
+  // string or number
+  if (typeof json !== `object`) {
+    return json
   }
-  
-  function deriveKeypair(masterKey: any) {
-    const cosmosHD = masterKey.derivePath(hdPathAtom)
-    const privateKey = cosmosHD.privateKey
-    const publicKey = secp256k1.publicKeyCreate(privateKey, true)
-  
-    return {
-      privateKey,
-      publicKey
-    }
-  }
-  
-  function bech32ify(address: any, prefix: any) {
-    const words = bech32.toWords(address)
-    return bech32.encode(prefix, words)
-  }
-  
-  // Transactions often have amino decoded objects in them {type, value}.
-  // We need to strip this clutter as we need to sign only the values.
-  export function prepareSignBytes(jsonTx: any): any {
-    if (Array.isArray(jsonTx)) {
-      return jsonTx.map(prepareSignBytes)
-    }
-  
-    // string or number
-    if (typeof jsonTx !== `object`) {
-      return jsonTx
-    }
-  
-    let sorted = {}
-    Object.keys(jsonTx)
-      .sort()
-      .forEach(key => {
-        if (jsonTx[key] === undefined || jsonTx[key] === null) return
-  
-        (sorted as any)[key] = prepareSignBytes(jsonTx[key])
-      })
-    return sorted
-  }
-  
-  /*
-  The SDK expects a certain message format to serialize and then sign.
-  
-  type StdSignMsg struct {
-    ChainID       string      `json:"chain_id"`
-    AccountNumber uint64      `json:"account_number"`
-    Sequence      uint64      `json:"sequence"`
-    Fee           auth.StdFee `json:"fee"`
-    Msgs          []sdk.Msg   `json:"msgs"`
-    Memo          string      `json:"memo"`
-  }
+
+  let sorted = {}
+  Object.keys(json)
+    .sort()
+    .forEach(key => {
+      if (json[key] === undefined || json[key] === null) return
+
+      ;(sorted as any)[key] = prepareSignBytes(json[key])
+    })
+  return sorted
+}
+
+/*
+  The SDK expects the tx to be converted into a certain message (StdSignMsg)
+  which then will be serialized and then sign.
   */
-  export function createSignMessage(
-    jsonTx: any,
-    { sequence, account_number, chain_id }:{sequence: any, account_number: any, chain_id: any}
-  ) {
-    // sign bytes need amount to be an array
-    const fee = {
-      amount: jsonTx.fee.amount || [],
-      gas: jsonTx.fee.gas
+export function getSignMessage(
+  tx: StandardTx,
+  {
+    sequence,
+    account_number,
+    chain_id
+  }: { sequence: string; account_number: string; chain_id: string }
+): StdSignMsg {
+  // sign bytes need amount to be an array
+  const fee = {
+    amount: tx.fee.amount || [],
+    gas: tx.fee.gas
+  }
+
+  return <StdSignMsg>prepareSignBytes({
+    fee,
+    memo: tx.memo,
+    msgs: tx.msg, // weird msg vs. msgs
+    sequence,
+    account_number,
+    chain_id
+  })
+}
+
+// produces the signature for a message (returns Buffer)
+export function signWithPrivateKey(signMessage: StdSignMsg, privateKey: Buffer): Buffer {
+  const signMessageString = JSON.stringify(signMessage)
+  const signHash = Buffer.from(SHA256(signMessageString).toString(), `hex`)
+  const { signature } = secp256k1.sign(signHash, privateKey)
+
+  return signature
+}
+
+//
+export function getSignatureObject(signature: Buffer, publicKey: Buffer) {
+  return {
+    signature: signature.toString(`base64`),
+    pub_key: {
+      type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
+      value: publicKey.toString(`base64`)
     }
+  }
+}
 
-    return JSON.stringify(
-      prepareSignBytes({
-        fee,
-        memo: jsonTx.memo,
-        msgs: jsonTx.msg, // weird msg vs. msgs
-        sequence,
-        account_number,
-        chain_id
-      })
-    )
-  }
-  
-  // produces the signature for a message (returns Buffer)
-  export function signWithPrivateKey(signMessage: any, privateKey: any) {
-    const signHash = Buffer.from(sha256(signMessage).toString(), `hex`)
-    const { signature } = secp256k1.sign(signHash, Buffer.from(privateKey, `hex`))
-    return signature
-  }
-  
-  export function createSignature(
-    signature: any,
-    publicKey: any
-  ) {
-    return {
-      signature: signature.toString(`base64`),
-      pub_key: {
-        type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
-        value: publicKey.toString(`base64`)
-      }
+// main function to sign a tx using the local keystore wallet
+// returns the complete signature object to add to the tx
+export function getSignature(
+  tx: StandardTx,
+  { privateKey, publicKey }: KeyPair,
+  requestMetaData: RequestMetaData
+): Signature {
+  const signMessage = getSignMessage(tx, requestMetaData)
+  const signature = signWithPrivateKey(signMessage, privateKey)
+
+  return {
+    signature: signature.toString('base64'),
+    pub_key: {
+      type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
+      value: publicKey.toString('base64')
     }
   }
+}
 
-  // main function to sign a jsonTx using the local keystore wallet
-  // returns the complete signature object to add to the tx
-  export function sign(jsonTx: any, wallet: any, requestMetaData: any) {
-    const signMessage = createSignMessage(jsonTx, requestMetaData)
-    const signatureBuffer = signWithPrivateKey(signMessage, wallet.privateKey)
-    const pubKeyBuffer = Buffer.from(wallet.publicKey, `hex`)
-    return createSignature(
-      signatureBuffer,
-      pubKeyBuffer
-    )
-  }
-  
-  // adds the signature object to the tx
-  export function createSignedTx(tx: any, signature: any) {
-    return Object.assign({}, tx, {
-      signatures: [signature]
-    })
-  }
-  
-  // the broadcast body consists of the signed tx and a return type
-  export function createBroadcastBody(signedTx: any) {
-    return JSON.stringify({
-      tx: signedTx,
-      return: `block`
-    })
-  }
+// adds the signature object to the tx
+export function getSignedTx(tx: StandardTx, signature: Signature): SignedTx {
+  return Object.assign({}, tx, {
+    signatures: [signature]
+  })
+}
 
+// the broadcast body consists of the signed tx and a return type
+// this body can be posted to any Stargate (Cosmos SDK REST API) to the endpoint `/txs`
+enum TxBroadcastReturnType {
+  Block = 'block',
+  Sync = 'sync',
+  Async = 'async'
+}
+export function getBroadcastBody(
+  signedTx: SignedTx,
+  returnType: TxBroadcastReturnType = TxBroadcastReturnType.Block
+) {
+  return JSON.stringify({
+    tx: signedTx,
+    return: returnType
+  })
+}
+
+// sign and send a tx to a Stargate (Cosmos SDK REST API)
+// export function send(tx: StandardTx, requestMetaData: RequestMetaData, keyPair: KeyPair, stargateURL: string, returnType: TxBroadcastReturnType) {
+//   const signature = getSignature(tx, keyPair, requestMetaData)
+//   const signedTx = getSignedTx(tx, signature)
+//   const broadcastTx = getBroadcastBody(signedTx, returnType)
+
+//   fetch(`${stargateURL}/txs`, {
+//     method: "POST",
+//     url: `${stargateURL}/txs`
+//   })
+// }

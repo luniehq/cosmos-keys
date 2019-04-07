@@ -1,19 +1,19 @@
 import {
-  createCosmosAddress,
-  sign,
-  createSignature,
-  createSignMessage,
-  generateWalletFromSeed,
-  generateSeed,
-  generateWallet,
-  createSignedTx,
-  createBroadcastBody
-} from "../src/js-cosmos-wallet"
-const btoa = require('btoa');
+  getCosmosAddress,
+  getSignatureObject,
+  getSignature,
+  getSignMessage,
+  getWalletFromSeed,
+  getSeed,
+  getWallet,
+  getSignedTx,
+  getBroadcastBody
+} from '../src/js-cosmos-wallet'
+const btoa = require('btoa')
 
 describe(`Key Generation`, () => {
   it(`should create a master key from a seed`, () => {
-    expect(generateWalletFromSeed(`a b c`)).toEqual({
+    expect(getWalletFromSeed(`a b c`)).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
       publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`
@@ -22,10 +22,13 @@ describe(`Key Generation`, () => {
 
   it(`create a seed`, () => {
     expect(
-      generateSeed(() =>
-        Array(64)
-          .fill(0)
-          .join(``)
+      getSeed(() =>
+        Buffer.from(
+          Array(64)
+            .fill(0)
+            .join(``),
+          'hex'
+        )
       )
     ).toBe(
       `abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art`
@@ -34,10 +37,13 @@ describe(`Key Generation`, () => {
 
   it(`create a keypair`, () => {
     expect(
-      generateWallet(() =>
-        Array(64)
-          .fill(0)
-          .join(``)
+      getWallet(() =>
+        Buffer.from(
+          Array(64)
+            .fill(0)
+            .join(``),
+          'hex'
+        )
       )
     ).toEqual({
       cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
@@ -48,10 +54,13 @@ describe(`Key Generation`, () => {
 
   it(`throws an error if entropy function is not producing correct bytes`, () => {
     expect(() =>
-      generateSeed(() =>
-        Array(10)
-          .fill(0)
-          .join(``)
+      getSeed(() =>
+        Buffer.from(
+          Array(10)
+            .fill(0)
+            .join(``),
+          'hex'
+        )
       )
     ).toThrow()
   })
@@ -70,7 +79,7 @@ describe(`Address generation`, () => {
       }
     ]
     vectors.forEach(({ pubkey, address }) => {
-      expect(createCosmosAddress(pubkey)).toBe(address)
+      expect(getCosmosAddress(pubkey)).toBe(address)
     })
   })
 })
@@ -144,12 +153,12 @@ describe(`Signing`, () => {
 
     vectors.forEach(({ signature, sequence, account_number, publicKey }) =>
       expect(
-        createSignature(signature, publicKey)
+        getSignatureObject(Buffer.from(signature, 'hex'), Buffer.from(publicKey, 'hex'))
       ).toMatchObject({
         signature: signature,
         pub_key: {
           type: `tendermint/PubKeySecp256k1`,
-          value: publicKey,
+          value: publicKey
         }
       })
     )
@@ -173,21 +182,23 @@ describe(`Signing`, () => {
       }
     ]
 
-    vectors.forEach(
-      ({ tx, sequence, account_number, chain_id, signMessage }) => {
-        expect(
-          createSignMessage(tx, { sequence, account_number, chain_id })
-        ).toBe(signMessage)
-      }
-    )
+    vectors.forEach(({ tx, sequence, account_number, chain_id, signMessage }) => {
+      expect(getSignMessage(tx, { sequence, account_number, chain_id })).toBe(signMessage)
+    })
   })
 
   it(`should create a correct tx signature object`, () => {
     const vectors = [
       {
         wallet: {
-          privateKey: `2afc5a66b30e7521d553ec8e6f7244f906df97477248c30c103d7b3f2c671fef`,
-          publicKey: `03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`
+          privateKey: Buffer.from(
+            `2afc5a66b30e7521d553ec8e6f7244f906df97477248c30c103d7b3f2c671fef`,
+            'hex'
+          ),
+          publicKey: Buffer.from(
+            `03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`,
+            'hex'
+          )
         },
         tx,
         signature: `YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`,
@@ -211,7 +222,7 @@ describe(`Signing`, () => {
         account_number,
         chain_id
       }) => {
-        const sigObject = sign(tx, wallet, {
+        const sigObject = getSignature(tx, wallet, {
           sequence,
           account_number,
           chain_id
@@ -225,18 +236,18 @@ describe(`Signing`, () => {
   })
 
   it(`attaches a signature`, () => {
-    const tx = {}
-    const sig = { x: 1 }
-    expect(createSignedTx(tx, sig)).toEqual({
-      signatures: [{ x: 1 }]
+    const tx = <StandardTx>{}
+    const sig = <Signature>{ signature: '1' }
+    expect(getSignedTx(tx, sig)).toEqual({
+      signatures: [{ signature: '1' }]
     })
   })
 
   it(`creates a broadcast body`, () => {
-    const signedTx = { x: 1 }
-    expect(createBroadcastBody(signedTx)).toEqual(
+    const signedTx = <SignedTx>{ signatures: [{ signature: '1' }] }
+    expect(getBroadcastBody(signedTx)).toEqual(
       JSON.stringify({
-        tx: { x: 1 },
+        tx: { signatures: [{ signature: '1' }] },
         return: `block`
       })
     )
