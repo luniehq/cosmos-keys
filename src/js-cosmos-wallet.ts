@@ -1,15 +1,15 @@
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
-// ...
-import bip39 from `bip39`
-import bip32 from `bip32`
-import bech32 from `bech32`
-import secp256k1 from `secp256k1`
+/// <reference path="js-cosmos-wallet.d.ts" />
+
+import bip39 from 'bip39'
+import bip32 from 'bip32'
+import bech32 from 'bech32'
+import secp256k1 from 'secp256k1'
 import CryptoJS, { SHA256, RIPEMD160 } from 'crypto-js'
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
 // The CryptoJS random bytes function should not be used in production, as it is not cryptographically safe
+// returns a byte buffer of the size specified
 export function randomBytes(size: number): Buffer {
   let hexString = ''
   /* istanbul ignore if: not testable on node */
@@ -25,8 +25,8 @@ export function randomBytes(size: number): Buffer {
   return Buffer.from(hexString, 'hex')
 }
 
-export function getWalletFromSeed(mnemonic: string): Wallet {
-  const masterKey = deriveMasterKey(mnemonic)
+export async function getWalletFromSeed(mnemonic: string): Promise<Wallet> {
+  const masterKey = await deriveMasterKey(mnemonic)
   const { privateKey, publicKey } = deriveKeypair(masterKey)
   const cosmosAddress = getCosmosAddress(publicKey.toString('hex'))
   return {
@@ -44,33 +44,36 @@ export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes)
   return mnemonic
 }
 
-export function getWallet(randomBytesFunc: (size: number) => Buffer = randomBytes): Wallet {
+export async function getWallet(
+  randomBytesFunc: (size: number) => Buffer = randomBytes
+): Promise<Wallet> {
   const mnemonic = getSeed(randomBytesFunc)
   return getWalletFromSeed(mnemonic)
 }
 
 // NOTE: this only works with a compressed public key (33 bytes)
 export function getCosmosAddress(publicKey: string): string {
-  const message = CryptoJS.enc.Hex.parse(publicKey)
-  const address = RIPEMD160(SHA256(message)).toString()
+  // const message = CryptoJS.enc.Hex.parse(publicKey)
+  const address = RIPEMD160(SHA256(publicKey).toString()).toString()
   const cosmosAddress = bech32ify(address, `cosmos`)
 
   return cosmosAddress
 }
 
-function deriveMasterKey(mnemonic: string): BIP32 {
+async function deriveMasterKey(mnemonic: string): Promise<bip32.BIP32> {
+  console.log(bip39)
   // throws if mnemonic is invalid
   bip39.validateMnemonic(mnemonic)
 
-  const seed = bip39.mnemonicToSeed(mnemonic)
+  const seed = await bip39.mnemonicToSeed(mnemonic)
   const masterKey = bip32.fromSeed(seed)
   return masterKey
 }
 
-function deriveKeypair(masterKey: BIP32): KeyPair {
+function deriveKeypair(masterKey: bip32.BIP32): KeyPair {
   const cosmosHD = masterKey.derivePath(hdPathAtom)
   const privateKey = cosmosHD.privateKey
-  const publicKey = secp256k1.publicKeyget(privateKey, true)
+  const publicKey = secp256k1.publicKeyCreate(privateKey, true)
 
   return {
     privateKey,
@@ -80,7 +83,7 @@ function deriveKeypair(masterKey: BIP32): KeyPair {
 
 // converts a string to a bech32 version of that string which shows a type and has a checksum
 function bech32ify(address: string, prefix: string) {
-  const words = bech32.toWords(address)
+  const words = bech32.toWords(Buffer.from(address, 'hex'))
   return bech32.encode(prefix, words)
 }
 
@@ -101,7 +104,6 @@ export function prepareSignBytes(json: any): object {
     .sort()
     .forEach(key => {
       if (json[key] === undefined || json[key] === null) return
-
       ;(sorted as any)[key] = prepareSignBytes(json[key])
     })
   return sorted

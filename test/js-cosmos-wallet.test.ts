@@ -12,8 +12,8 @@ import {
 const btoa = require('btoa')
 
 describe(`Key Generation`, () => {
-  it(`should create a master key from a seed`, () => {
-    expect(getWalletFromSeed(`a b c`)).toEqual({
+  it.only(`should create a master key from a seed`, async () => {
+    expect(await getWalletFromSeed(`a b c`)).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
       publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`

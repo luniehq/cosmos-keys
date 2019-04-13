@@ -1,27 +1,24 @@
-export interface BIP32 {
-  derivePath(hdPath: string): { privateKey: Buffer }
-}
-export interface KeyPair {
+declare interface KeyPair {
   privateKey: Buffer
   publicKey: Buffer
 }
-export interface Wallet extends KeyPair {
+declare interface Wallet extends KeyPair {
   cosmosAddress: string
 }
-export interface Coin {
+declare interface Coin {
   denom: string
   amount: string
 }
-export interface Fee {
+declare interface Fee {
   amount: Coin[]
   gas: string
 }
-export interface StandardTx {
+declare interface StandardTx {
   fee: Fee
   memo: string
   msg: any // the content of the tx
 }
-export interface StdSignMsg {
+declare interface StdSignMsg {
   chain_id: string
   account_number: string
   sequence: string
@@ -29,18 +26,18 @@ export interface StdSignMsg {
   msgs: any[]
   memo: string
 }
-export interface RequestMetaData {
+declare interface RequestMetaData {
   sequence: string
   account_number: string
   chain_id: string
 }
-export interface Signature {
+declare interface Signature {
   signature: string
   pub_key: {
     type: `tendermint/PubKeySecp256k1`
     value: string
   }
 }
-export interface SignedTx extends StandardTx {
+declare interface SignedTx extends StandardTx {
   signatures: Signature[]
 }
