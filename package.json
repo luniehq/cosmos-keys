@@ -1,6 +1,6 @@
 {
   "name": "js-cosmos-wallet",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "js version of cosmos wallet signer",
   "keywords": [
     "cosmos",
