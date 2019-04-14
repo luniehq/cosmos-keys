@@ -2,7 +2,9 @@ declare interface KeyPair {
   privateKey: Buffer
   publicKey: Buffer
 }
-declare interface Wallet extends KeyPair {
+declare interface Wallet {
+  privateKey: string
+  publicKey: string
   cosmosAddress: string
 }
 declare interface Coin {

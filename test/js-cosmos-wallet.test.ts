@@ -7,12 +7,12 @@ import {
   getSeed,
   getWallet,
   getSignedTx,
-  getBroadcastBody
+  getBroadcastBody,
+  signWithPrivateKey
 } from '../src/js-cosmos-wallet'
-const btoa = require('btoa')
 
 describe(`Key Generation`, () => {
-  it.only(`should create a master key from a seed`, async () => {
+  it(`should create a wallet from a seed`, async () => {
     expect(await getWalletFromSeed(`a b c`)).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
@@ -35,7 +35,7 @@ describe(`Key Generation`, () => {
     )
   })
 
-  it(`create a keypair`, () => {
+  it(`create a random wallet`, () => {
     expect(
       getWallet(() =>
         Buffer.from(
@@ -138,24 +138,20 @@ describe(`Signing`, () => {
   it(`should create an Object containing the signature and pubkey`, () => {
     const vectors = [
       {
-        sequence: `0`,
-        account_number: `1`,
         signature: `MEQCIE2f8y5lVAOZu/MDZX3aH+d0sgvTRVrEzdP60NHr7lKJAiBexCiaAsh35R25IhgJMBIp/AD2Lfuk57suV8gnqOSfzg==`,
-        publicKey: `03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`
+        publicKey: `A6seu7Ia7jUVTjaq68JQZxd/eD9+lnydZJPokgwF5A61`
       },
       {
-        sequence: `1`,
-        account_number: `1`,
         signature: `MEQCIE2f8y5lVAOZu/MDZX3aH+d0sgvTRVrEzdP60NHr7lKJAiBexCiaAsh35R25IhgJMBIp/AD2Lfuk57suV8gnqOSfzg==`,
-        publicKey: `0243311589af63c2adda04fcd7792c038a05c12a4fe40351b3eb1612ff6b2e5a0e`
+        publicKey: `AkMxFYmvY8Kt2gT813ksA4oFwSpP5ANRs+sWEv9rLloO`
       }
     ]
 
-    vectors.forEach(({ signature, sequence, account_number, publicKey }) =>
+    vectors.forEach(({ signature, publicKey }) =>
       expect(
-        getSignatureObject(Buffer.from(signature, 'hex'), Buffer.from(publicKey, 'hex'))
+        getSignatureObject(Buffer.from(signature, 'base64'), Buffer.from(publicKey, 'base64'))
       ).toMatchObject({
-        signature: signature,
+        signature,
         pub_key: {
           type: `tendermint/PubKeySecp256k1`,
           value: publicKey
@@ -164,26 +160,76 @@ describe(`Signing`, () => {
     )
   })
 
-  it(`should create the correct string to sign`, () => {
+  it(`should create the correct message to sign`, () => {
     const vectors = [
       {
         tx,
         sequence: `0`,
         account_number: `1`,
         chain_id: `tendermint_test`,
-        signMessage: `{"account_number":"1","chain_id":"tendermint_test","fee":{"amount":[{"amount":"0","denom":""}],"gas":"21906"},"memo":"","msgs":[{"type":"cosmos-sdk/Send","value":{"inputs":[{"address":"cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66","coins":[{"amount":"1","denom":"STAKE"}]}],"outputs":[{"address":"cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt","coins":[{"amount":"1","denom":"STAKE"}]}]}}],"sequence":"0"}`
+        signMessage: {
+          account_number: '1',
+          chain_id: 'tendermint_test',
+          fee: { amount: [{ amount: '0', denom: '' }], gas: '21906' },
+          memo: '',
+          msgs: [
+            {
+              type: 'cosmos-sdk/Send',
+              value: {
+                inputs: [
+                  {
+                    address: 'cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66',
+                    coins: [{ amount: '1', denom: 'STAKE' }]
+                  }
+                ],
+                outputs: [
+                  {
+                    address: 'cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt',
+                    coins: [{ amount: '1', denom: 'STAKE' }]
+                  }
+                ]
+              }
+            }
+          ],
+          sequence: '0'
+        }
       },
       {
         tx: txWithNulls,
         sequence: `0`,
         account_number: `1`,
         chain_id: `tendermint_test`,
-        signMessage: `{"account_number":"1","chain_id":"tendermint_test","fee":{"amount":[{"amount":"0","denom":""}],"gas":"21906"},"memo":"","msgs":[{"type":"cosmos-sdk/Send","value":{"inputs":[{"address":"cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66","coins":[{"amount":"1","denom":"STAKE"}]}],"outputs":[{"address":"cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt","coins":[{"amount":"1","denom":"STAKE"}]}]}}],"sequence":"0"}`
+        signMessage: {
+          account_number: '1',
+          chain_id: 'tendermint_test',
+          fee: { amount: [{ amount: '0', denom: '' }], gas: '21906' },
+          memo: '',
+          msgs: [
+            {
+              type: 'cosmos-sdk/Send',
+              value: {
+                inputs: [
+                  {
+                    address: 'cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66',
+                    coins: [{ amount: '1', denom: 'STAKE' }]
+                  }
+                ],
+                outputs: [
+                  {
+                    address: 'cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt',
+                    coins: [{ amount: '1', denom: 'STAKE' }]
+                  }
+                ]
+              }
+            }
+          ],
+          sequence: '0'
+        }
       }
     ]
 
     vectors.forEach(({ tx, sequence, account_number, chain_id, signMessage }) => {
-      expect(getSignMessage(tx, { sequence, account_number, chain_id })).toBe(signMessage)
+      expect(getSignMessage(tx, { sequence, account_number, chain_id })).toEqual(signMessage)
     })
   })
 
