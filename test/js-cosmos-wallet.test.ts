@@ -1,6 +1,5 @@
 import {
   getCosmosAddress,
-  getSignatureObject,
   getSignature,
   getSignMessage,
   getWalletFromSeed,
@@ -134,31 +133,6 @@ describe(`Signing`, () => {
     signatures: null,
     memo: ``
   }
-
-  it(`should create an Object containing the signature and pubkey`, () => {
-    const vectors = [
-      {
-        signature: `MEQCIE2f8y5lVAOZu/MDZX3aH+d0sgvTRVrEzdP60NHr7lKJAiBexCiaAsh35R25IhgJMBIp/AD2Lfuk57suV8gnqOSfzg==`,
-        publicKey: `A6seu7Ia7jUVTjaq68JQZxd/eD9+lnydZJPokgwF5A61`
-      },
-      {
-        signature: `MEQCIE2f8y5lVAOZu/MDZX3aH+d0sgvTRVrEzdP60NHr7lKJAiBexCiaAsh35R25IhgJMBIp/AD2Lfuk57suV8gnqOSfzg==`,
-        publicKey: `AkMxFYmvY8Kt2gT813ksA4oFwSpP5ANRs+sWEv9rLloO`
-      }
-    ]
-
-    vectors.forEach(({ signature, publicKey }) =>
-      expect(
-        getSignatureObject(Buffer.from(signature, 'base64'), Buffer.from(publicKey, 'base64'))
-      ).toMatchObject({
-        signature,
-        pub_key: {
-          type: `tendermint/PubKeySecp256k1`,
-          value: publicKey
-        }
-      })
-    )
-  })
 
   it(`should create the correct message to sign`, () => {
     const vectors = [

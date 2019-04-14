@@ -143,17 +143,6 @@ export function signWithPrivateKey(signMessage: StdSignMsg, privateKey: Buffer):
   return signature
 }
 
-//
-export function getSignatureObject(signature: Buffer, publicKey: Buffer): Signature {
-  return {
-    signature: signature.toString(`base64`),
-    pub_key: {
-      type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
-      value: publicKey.toString(`base64`)
-    }
-  }
-}
-
 // main function to sign a tx using the local keystore wallet
 // returns the complete signature object to add to the tx
 export function getSignature(
@@ -164,7 +153,13 @@ export function getSignature(
   const signMessage = getSignMessage(tx, requestMetaData)
   const signature = signWithPrivateKey(signMessage, privateKey)
 
-  return getSignatureObject(signature, publicKey)
+  return {
+    signature: signature.toString(`base64`),
+    pub_key: {
+      type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
+      value: publicKey.toString(`base64`)
+    }
+  }
 }
 
 // adds the signature object to the tx
