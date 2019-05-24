@@ -6,16 +6,23 @@ import * as bech32 from 'bech32'
 import * as secp256k1 from 'secp256k1'
 import * as CryptoJS from 'crypto-js'
 
+let WindowCrypto: Crypto | undefined
+try {
+  WindowCrypto = window ? window.crypto : undefined
+} catch (err) {
+  // ignore this in a node environment like the tests
+}
+
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
 // The CryptoJS random bytes function should not be used in production, as it is not cryptographically safe
 // returns a byte buffer of the size specified
-export function randomBytes(size: number): Buffer {
+export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
   let hexString = ''
   /* istanbul ignore if: not testable on node */
-  if (window.crypto) {
+  if (windowCrypto) {
     let keyContainer = new Uint32Array(size / 4)
-    keyContainer = window.crypto.getRandomValues(keyContainer)
+    keyContainer = windowCrypto.getRandomValues(keyContainer)
     for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
       hexString += keyContainer[keySegment].toString(16) // Convert int to hex
     }
@@ -84,56 +91,6 @@ function bech32ify(address: string, prefix: string) {
   return bech32.encode(prefix, words)
 }
 
-// Signbytes need to be deterministic, therefor we need to sort the properties
-// By convention also empty properties get removed
-export function prepareSignBytes(json: any): any {
-  if (Array.isArray(json)) {
-    return json.map(prepareSignBytes)
-  }
-
-  // string or number
-  if (typeof json !== `object`) {
-    return json
-  }
-
-  let sorted = {}
-  Object.keys(json)
-    .sort()
-    .forEach(key => {
-      if (json[key] === undefined || json[key] === null) return
-      ;(sorted as any)[key] = prepareSignBytes(json[key])
-    })
-  return sorted
-}
-
-/*
-  The SDK expects the tx to be converted into a certain message (StdSignMsg)
-  which then will be serialized and then sign.
-  */
-export function getSignMessage(
-  tx: StandardTx,
-  {
-    sequence,
-    account_number,
-    chain_id
-  }: { sequence: string; account_number: string; chain_id: string }
-): StdSignMsg {
-  // sign bytes need amount to be an array
-  const fee = {
-    amount: tx.fee.amount || [],
-    gas: tx.fee.gas
-  }
-
-  return <StdSignMsg>prepareSignBytes({
-    fee,
-    memo: tx.memo,
-    msgs: tx.msg, // weird msg vs. msgs
-    sequence,
-    account_number,
-    chain_id
-  })
-}
-
 // produces the signature for a message (returns Buffer)
 export function signWithPrivateKey(signMessage: StdSignMsg, privateKey: Buffer): Buffer {
   const signMessageString = JSON.stringify(signMessage)
@@ -142,58 +99,3 @@ export function signWithPrivateKey(signMessage: StdSignMsg, privateKey: Buffer):
 
   return signature
 }
-
-// main function to sign a tx using the local keystore wallet
-// returns the complete signature object to add to the tx
-export function getSignature(
-  tx: StandardTx,
-  { privateKey, publicKey }: KeyPair,
-  requestMetaData: RequestMetaData
-): Signature {
-  const signMessage = getSignMessage(tx, requestMetaData)
-  const signature = signWithPrivateKey(signMessage, privateKey)
-
-  return {
-    signature: signature.toString(`base64`),
-    pub_key: {
-      type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
-      value: publicKey.toString(`base64`)
-    }
-  }
-}
-
-// adds the signature object to the tx
-export function getSignedTx(tx: StandardTx, signature: Signature): SignedTx {
-  return Object.assign({}, tx, {
-    signatures: [signature]
-  })
-}
-
-// the broadcast body consists of the signed tx and a return type
-// this body can be posted to any Stargate (Cosmos SDK REST API) to the endpoint `/txs`
-enum TxBroadcastReturnType {
-  Block = 'block',
-  Sync = 'sync',
-  Async = 'async'
-}
-export function getBroadcastBody(
-  signedTx: SignedTx,
-  returnType: TxBroadcastReturnType = TxBroadcastReturnType.Block
-) {
-  return JSON.stringify({
-    tx: signedTx,
-    return: returnType
-  })
-}
-
-// sign and send a tx to a Stargate (Cosmos SDK REST API)
-// export function send(tx: StandardTx, requestMetaData: RequestMetaData, keyPair: KeyPair, stargateURL: string, returnType: TxBroadcastReturnType) {
-//   const signature = getSignature(tx, keyPair, requestMetaData)
-//   const signedTx = getSignedTx(tx, signature)
-//   const broadcastTx = getBroadcastBody(signedTx, returnType)
-
-//   fetch(`${stargateURL}/txs`, {
-//     method: "POST",
-//     url: `${stargateURL}/txs`
-//   })
-// }

@@ -1,16 +1,17 @@
 import {
+  randomBytes,
   getCosmosAddress,
-  getSignature,
-  getSignMessage,
   getWalletFromSeed,
   getSeed,
   getWallet,
-  getSignedTx,
-  getBroadcastBody,
   signWithPrivateKey
 } from '../src/js-cosmos-wallet'
 
 describe(`Key Generation`, () => {
+  it(`randomBytes polyfilled`, () => {
+    expect(randomBytes(32, undefined).length).toBe(32)
+  })
+
   it(`should create a wallet from a seed`, async () => {
     expect(await getWalletFromSeed(`a b c`)).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
@@ -84,63 +85,10 @@ describe(`Address generation`, () => {
 })
 
 describe(`Signing`, () => {
-  const tx = {
-    msg: [
-      {
-        type: `cosmos-sdk/Send`,
-        value: {
-          inputs: [
-            {
-              address: `cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66`,
-              coins: [{ denom: `STAKE`, amount: `1` }]
-            }
-          ],
-          outputs: [
-            {
-              address: `cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt`,
-              coins: [{ denom: `STAKE`, amount: `1` }]
-            }
-          ]
-        }
-      }
-    ],
-    fee: { amount: [{ denom: ``, amount: `0` }], gas: `21906` },
-    signatures: null,
-    memo: ``
-  }
-  const txWithNulls = {
-    msg: [
-      {
-        type: `cosmos-sdk/Send`,
-        value: {
-          inputs: [
-            {
-              address: `cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66`,
-              coins: [{ denom: `STAKE`, amount: `1` }]
-            }
-          ],
-          outputs: [
-            {
-              x: undefined,
-              address: `cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt`,
-              coins: [{ denom: `STAKE`, amount: `1` }]
-            }
-          ]
-        }
-      }
-    ],
-    fee: { amount: [{ denom: ``, amount: `0` }], gas: `21906` },
-    signatures: null,
-    memo: ``
-  }
-
-  it(`should create the correct message to sign`, () => {
+  it(`should create a correct signature`, () => {
     const vectors = [
       {
-        tx,
-        sequence: `0`,
-        account_number: `1`,
-        chain_id: `tendermint_test`,
+        privateKey: `2afc5a66b30e7521d553ec8e6f7244f906df97477248c30c103d7b3f2c671fef`,
         signMessage: {
           account_number: '1',
           chain_id: 'tendermint_test',
@@ -166,110 +114,14 @@ describe(`Signing`, () => {
             }
           ],
           sequence: '0'
-        }
-      },
-      {
-        tx: txWithNulls,
-        sequence: `0`,
-        account_number: `1`,
-        chain_id: `tendermint_test`,
-        signMessage: {
-          account_number: '1',
-          chain_id: 'tendermint_test',
-          fee: { amount: [{ amount: '0', denom: '' }], gas: '21906' },
-          memo: '',
-          msgs: [
-            {
-              type: 'cosmos-sdk/Send',
-              value: {
-                inputs: [
-                  {
-                    address: 'cosmos1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66',
-                    coins: [{ amount: '1', denom: 'STAKE' }]
-                  }
-                ],
-                outputs: [
-                  {
-                    address: 'cosmos1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt',
-                    coins: [{ amount: '1', denom: 'STAKE' }]
-                  }
-                ]
-              }
-            }
-          ],
-          sequence: '0'
-        }
-      }
-    ]
-
-    vectors.forEach(({ tx, sequence, account_number, chain_id, signMessage }) => {
-      expect(getSignMessage(tx, { sequence, account_number, chain_id })).toEqual(signMessage)
-    })
-  })
-
-  it(`should create a correct tx signature object`, () => {
-    const vectors = [
-      {
-        wallet: {
-          privateKey: Buffer.from(
-            `2afc5a66b30e7521d553ec8e6f7244f906df97477248c30c103d7b3f2c671fef`,
-            'hex'
-          ),
-          publicKey: Buffer.from(
-            `03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`,
-            'hex'
-          )
         },
-        tx,
-        signature: `YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`,
-        sequence: `0`,
-        account_number: `1`,
-        chain_id: `tendermint_test`,
-        pub_key: {
-          type: `tendermint/PubKeySecp256k1`,
-          value: `A6seu7Ia7jUVTjaq68JQZxd/eD9+lnydZJPokgwF5A61`
-        }
+        signature: `YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`
       }
     ]
 
-    vectors.forEach(
-      ({
-        wallet,
-        tx,
-        pub_key: expectedPubKey,
-        signature: expectedSignature,
-        sequence,
-        account_number,
-        chain_id
-      }) => {
-        const sigObject = getSignature(tx, wallet, {
-          sequence,
-          account_number,
-          chain_id
-        })
-        expect(sigObject).toEqual({
-          signature: expectedSignature,
-          pub_key: expectedPubKey
-        })
-      }
-    )
-  })
-
-  it(`attaches a signature`, () => {
-    const tx = <StandardTx>{}
-    const sig = <Signature>{ signature: '1' }
-    expect(getSignedTx(tx, sig)).toEqual({
-      signatures: [{ signature: '1' }]
+    vectors.forEach(({ privateKey, signMessage, signature: expectedSignature }) => {
+      const signature = signWithPrivateKey(signMessage, Buffer.from(privateKey, 'hex'))
+      expect(signature.toString('base64')).toEqual(expectedSignature)
     })
-  })
-
-  it(`creates a broadcast body`, () => {
-    const signedTx = <SignedTx>{ signatures: [{ signature: '1' }] }
-    expect(getBroadcastBody(signedTx)).toEqual(
-      JSON.stringify({
-        tx: { signatures: [{ signature: '1' }] },
-        return: `block`
-      })
-    )
   })
 })
