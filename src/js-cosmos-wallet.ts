@@ -35,7 +35,7 @@ export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
 export function getWalletFromSeed(mnemonic: string): Wallet {
   const masterKey = deriveMasterKey(mnemonic)
   const { privateKey, publicKey } = deriveKeypair(masterKey)
-  const cosmosAddress = getCosmosAddress(publicKey.toString('hex'))
+  const cosmosAddress = getCosmosAddress(publicKey)
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
@@ -57,8 +57,8 @@ export function getWallet(randomBytesFunc: (size: number) => Buffer = randomByte
 }
 
 // NOTE: this only works with a compressed public key (33 bytes)
-export function getCosmosAddress(publicKey: string): string {
-  const message = CryptoJS.enc.Hex.parse(publicKey)
+export function getCosmosAddress(publicKey: Buffer): string {
+  const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
   const address = CryptoJS.RIPEMD160(<any>CryptoJS.SHA256(message)).toString()
   const cosmosAddress = bech32ify(address, `cosmos`)
 

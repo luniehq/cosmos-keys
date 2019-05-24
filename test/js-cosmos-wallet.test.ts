@@ -79,7 +79,7 @@ describe(`Address generation`, () => {
       }
     ]
     vectors.forEach(({ pubkey, address }) => {
-      expect(getCosmosAddress(pubkey)).toBe(address)
+      expect(getCosmosAddress(Buffer.from(pubkey, 'hex'))).toBe(address)
     })
   })
 })
