@@ -1,5 +1,5 @@
 {
-  "name": "js-cosmos-wallet",
+  "name": "@lunie/js-cosmos-wallet",
   "version": "0.0.5",
   "description": "js version of cosmos wallet signer",
   "keywords": [
@@ -20,7 +20,7 @@
   "author": "Fabian Weber <fabian@tendermint.com>, Billy Rennekamp <billy@tendermint.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/okwme/js-cosmos-wallet.git"
+    "url": "https://github.com/luniehq/js-cosmos-wallet.git"
   },
   "license": "MIT",
   "engines": {
