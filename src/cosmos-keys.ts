@@ -1,4 +1,4 @@
-/// <reference path="js-cosmos-wallet.d.ts" />
+/// <reference path="cosmos-keys.d.ts" />
 
 import * as bip39 from 'bip39'
 import * as bip32 from 'bip32'

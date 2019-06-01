@@ -7,7 +7,7 @@ This library deals with tasks that are considered *security-critical* and should
 ## Install
 
 ```bash
-yarn add @lunie/js-comos-wallet
+yarn add @lunie/comos-keys
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ yarn add @lunie/js-comos-wallet
 ### Create a wallet
 
 ```js
-import { getWallet } from "@lunie/js-comos-wallet"
+import { getWallet } from "@lunie/comos-keys"
 
 const { cosmosAddress, privateKey, publicKey } = getWallet()
 // Attention: protect the `privateKey` at all cost and never display it anywhere!!
@@ -24,7 +24,7 @@ const { cosmosAddress, privateKey, publicKey } = getWallet()
 ### Import a seed
 
 ```js
-import { generateWalletFromSeed } from "@lunie/js-comos-wallet"
+import { generateWalletFromSeed } from "@lunie/comos-keys"
 
 const seed = ...24 seed words here
 
@@ -35,7 +35,7 @@ const { cosmosAddress, privateKey, publicKey } = generateWalletFromSeed(seed)
 ### Sign a message
 
 ```js
-import { signWithPrivateKey } from "@lunie/js-comos-wallet"
+import { signWithPrivateKey } from "@lunie/comos-keys"
 
 const privateKey = Buffer.from(...)
 const signMessage = ... message to sign, generate messages with "@lunie/cosmos-js"
@@ -46,7 +46,7 @@ const signature = signWithPrivateKey(signMessage, privateKey)
 ### Using with cosmos-js
 
 ```js
-import { signWithPrivateKey } from "@lunie/js-comos-wallet"
+import { signWithPrivateKey } from "@lunie/comos-keys"
 import Cosmos from "@lunie/cosmos-js"
 
 const privateKey = Buffer.from(...)
