@@ -14,9 +14,9 @@
   "main": "lib/cosmos-keys.js",
   "typings": "lib/types/cosmos-keys.d.ts",
   "files": [
-    "dist"
+    "lib"
   ],
-  "author": "Fabian Weber <fabian@tendermint.com>, Billy Rennekamp <billy@tendermint.com>",
+  "author": "Fabian Weber <fabian@lunie.io>, Billy Rennekamp <billy@tendermint.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/luniehq/js-cosmos-wallet.git"
