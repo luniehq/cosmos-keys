@@ -1,7 +1,7 @@
 {
-  "name": "@lunie/js-cosmos-wallet",
+  "name": "@lunie/cosmos-keys",
   "version": "0.0.5",
-  "description": "js version of cosmos wallet signer",
+  "description": "js version of cosmos wallet signer and address generation",
   "keywords": [
     "cosmos",
     "cosmos.network",
@@ -11,9 +11,8 @@
     "cosmos sdk",
     "cosmos-sdk"
   ],
-  "main": "dist/js-cosmos-wallet.umd.js",
-  "module": "dist/js-cosmos-wallet.es5.js",
-  "typings": "dist/types/js-cosmos-wallet.d.ts",
+  "main": "lib/cosmos-keys.js",
+  "typings": "lib/types/cosmos-keys.d.ts",
   "files": [
     "dist"
   ],
@@ -28,9 +27,8 @@
   },
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
-    "start": "rollup -c rollup.config.ts -w",
+    "prebuild": "rimraf lib",
+    "build": "webpack",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
@@ -78,8 +76,13 @@
     "singleQuote": true
   },
   "devDependencies": {
+    "@types/bech32": "^1.1.1",
+    "@types/bip32": "^1.0.2",
+    "@types/bip39": "^2.4.2",
+    "@types/crypto-js": "^3.1.43",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.11.0",
+    "@types/secp256k1": "^3.5.0",
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "husky": "^1.0.1",
@@ -89,24 +92,16 @@
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
-    "rollup": "^0.67.0",
-    "rollup-plugin-commonjs": "^9.1.8",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.18.0",
     "ts-jest": "^23.10.2",
+    "ts-loader": "^6.0.2",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.12.0",
-    "typescript": "^3.0.3",
-    "@types/bech32": "^1.1.1",
-    "@types/bip32": "^1.0.2",
-    "@types/bip39": "^2.4.2",
-    "@types/crypto-js": "^3.1.43",
-    "@types/secp256k1": "^3.5.0"
+    "typescript": "^3.5.1",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2"
   },
   "dependencies": {
     "bech32": "^1.1.3",

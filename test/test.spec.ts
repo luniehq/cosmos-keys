@@ -5,7 +5,7 @@ import {
   getSeed,
   getWallet,
   signWithPrivateKey
-} from '../src/js-cosmos-wallet'
+} from '../src/cosmos-keys'
 
 describe(`Key Generation`, () => {
   it(`randomBytes polyfilled`, () => {
@@ -79,7 +79,7 @@ describe(`Address generation`, () => {
       }
     ]
     vectors.forEach(({ pubkey, address }) => {
-      expect(getCosmosAddress(pubkey)).toBe(address)
+      expect(getCosmosAddress(Buffer.from(pubkey, 'hex'))).toBe(address)
     })
   })
 })
