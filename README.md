@@ -1,8 +1,8 @@
-# Cosmos Wallet and Signer
+# Cosmos Keys
 
-This library helps creating wallets (keypairs and addresses) for Cosmos SDK based blockchains and sign messages for those networks. If you are looking for a library to create messages for those networks, check out https://github.com/luniehq/cosmos-js.
+Cosmos Keys is a library for creating keys and signing messages on Cosmos. You can use it to generate keypairs and addresses and to sign messages for the Cosmos Network. 
 
-These libraries are split up to split security critical parts like this library from non security critical parts like cosmos-js.
+This library deals with tasks that are considered *security-critical* and should be used very carefully.
 
 ## Install
 
