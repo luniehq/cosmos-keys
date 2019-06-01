@@ -16,7 +16,7 @@
   "author": "Fabian Weber <fabian@lunie.io>, Billy Rennekamp <billy@tendermint.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/luniehq/js-cosmos-wallet.git"
+    "url": "https://github.com/luniehq/cosmos-keys.git"
   },
   "license": "Apache-2.0",
   "engines": {
