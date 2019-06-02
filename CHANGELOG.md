@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.0.7] - 2019-06-02
+
+### Fixed
+
+- Release didn't include correct files @faboweb
+- Fixed publishing wrong files @faboweb
+
+### Repository
+
+- Changed license to Apache-2 @faboweb
+
 ## [0.0.6] - 2019-06-01
 
 ### Repository
