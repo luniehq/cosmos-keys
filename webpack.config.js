@@ -3,8 +3,8 @@ const config = {
   entry: ['./src/cosmos-keys.ts'],
   output: {
     path: __dirname + '/lib',
-    filename: 'comos-keys.js',
-    library: 'comos-keys',
+    filename: 'cosmos-keys.js',
+    library: 'cosmos-keys',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },

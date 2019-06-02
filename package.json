@@ -22,6 +22,9 @@
   "engines": {
     "node": ">=6.0.0"
   },
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf lib",
@@ -31,7 +34,6 @@
     "test:prod": "npm run lint && npm run test -- --no-cache",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "precommit": "lint-staged",
-    "prepublishOnly": "git checkout master && npm run build",
     "log": "simsala log",
     "release": "git checkout develop & git pull & git push origin develop:release"
   },
