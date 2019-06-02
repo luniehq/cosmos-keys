@@ -92,8 +92,9 @@ function bech32ify(address: string, prefix: string) {
 }
 
 // produces the signature for a message (returns Buffer)
-export function signWithPrivateKey(signMessage: StdSignMsg, privateKey: Buffer): Buffer {
-  const signMessageString = JSON.stringify(signMessage)
+export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey: Buffer): Buffer {
+  const signMessageString: string =
+    typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
   const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
   const { signature } = secp256k1.sign(signHash, privateKey)
 
