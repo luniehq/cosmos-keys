@@ -1,6 +1,6 @@
 {
   "name": "@lunie/cosmos-keys",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "js version of cosmos wallet signer and address generation",
   "keywords": [
     "cosmos",
@@ -33,6 +33,7 @@
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "prepublishOnly": "npm run build",
     "precommit": "lint-staged",
     "log": "simsala log",
     "release": "git checkout develop & git pull & git push origin develop:release"

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.0.9] - 2019-06-02
+
+### Added
+
+- accept strings as signmessage @faboweb
+
 ## [0.0.8] - 2019-06-02
 
 ### Fixed
