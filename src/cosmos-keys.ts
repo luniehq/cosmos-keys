@@ -21,8 +21,15 @@ export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
   let hexString = ''
   /* istanbul ignore if: not testable on node */
   if (windowCrypto) {
+    const chunkSize = size / 4
     let keyContainer = new Uint32Array(size / 4)
-    keyContainer = windowCrypto.getRandomValues(keyContainer)
+
+    // create random values until we have chunks to generate a private key
+    // if we allow smaller chunks, the created hex key can be smaller then the needed size
+    do {
+      keyContainer = windowCrypto.getRandomValues(keyContainer)
+    } while (keyContainer.find(number => number.toString(16).length !== chunkSize))
+
     for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
       hexString += keyContainer[keySegment].toString(16) // Convert int to hex
     }
