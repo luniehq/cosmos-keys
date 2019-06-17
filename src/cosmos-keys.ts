@@ -22,7 +22,7 @@ export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
   /* istanbul ignore if: not testable on node */
   if (windowCrypto) {
     const chunkSize = size / 4
-    let keyContainer = new Uint32Array(size / 4)
+    let keyContainer = new Uint32Array(chunkSize)
     keyContainer = windowCrypto.getRandomValues(keyContainer)
 
     for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
