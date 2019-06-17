@@ -23,15 +23,15 @@ export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
   if (windowCrypto) {
     const chunkSize = size / 4
     let keyContainer = new Uint32Array(size / 4)
-
-    // create random values until we have chunks to generate a private key
-    // if we allow smaller chunks, the created hex key can be smaller then the needed size
-    do {
-      keyContainer = windowCrypto.getRandomValues(keyContainer)
-    } while (keyContainer.find(number => number.toString(16).length !== chunkSize))
+    keyContainer = windowCrypto.getRandomValues(keyContainer)
 
     for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
-      hexString += keyContainer[keySegment].toString(16) // Convert int to hex
+      let chunk = keyContainer[keySegment].toString(16) // Convert int to hex
+      while (chunk.length < chunkSize) {
+        // fill up so we get equal sized chunks
+        chunk = '0' + chunk
+      }
+      hexString += chunk // join
     }
   } else {
     hexString = CryptoJS.lib.WordArray.random(size).toString()
