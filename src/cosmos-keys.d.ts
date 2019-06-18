@@ -7,6 +7,11 @@ declare interface Wallet {
   publicKey: string
   cosmosAddress: string
 }
+declare interface StoredWallet {
+  name: string
+  address: string
+  wallet: string // encrypted wallet
+}
 declare interface Coin {
   denom: string
   amount: string
