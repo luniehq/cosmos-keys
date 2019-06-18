@@ -7,7 +7,7 @@ This library deals with tasks that are considered *security-critical* and should
 ## Install
 
 ```bash
-yarn add @lunie/comos-keys
+yarn add @lunie/cosmos-keys
 ```
 
 ## Usage
