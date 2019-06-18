@@ -66,7 +66,7 @@ export function getWallet(randomBytesFunc: (size: number) => Buffer = randomByte
 // NOTE: this only works with a compressed public key (33 bytes)
 export function getCosmosAddress(publicKey: Buffer): string {
   const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
-  const address = CryptoJS.RIPEMD160(<any>CryptoJS.SHA256(message)).toString()
+  const address = CryptoJS.RIPEMD160(CryptoJS.SHA256(message) as any).toString()
   const cosmosAddress = bech32ify(address, `cosmos`)
 
   return cosmosAddress
