@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import {
   randomBytes,
   getCosmosAddress,
@@ -9,7 +13,7 @@ import {
 
 describe(`Key Generation`, () => {
   it(`randomBytes polyfilled`, () => {
-    expect(randomBytes(32, undefined).length).toBe(32)
+    expect(randomBytes(32).length).toBe(32)
   })
 
   it(`should create a wallet from a seed`, async () => {
