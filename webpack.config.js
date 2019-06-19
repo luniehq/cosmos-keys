@@ -1,6 +1,6 @@
 const config = {
   devtool: "cheap-source-map",
-  entry: ['./src/cosmos-keys.ts'],
+  entry: ['./src/index.ts'],
   output: {
     path: __dirname + '/lib',
     filename: 'cosmos-keys.js',

@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
       - run: yarn add simsala
-      - run: node node_modules/simsala/src/cli.js check --pending-path ./changes
+      - run: node node_modules/simsala/src/cli.js check
 
   lint:
     docker: 
