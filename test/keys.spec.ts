@@ -9,10 +9,10 @@ import {
 
 describe(`Key Generation`, () => {
   it(`randomBytes browser`, () => {
-    const crypto = require('crypto');
+    const crypto = require('crypto')
     const window = {
       crypto: {
-        getRandomValues: (array: any[]) => crypto.randomBytes(array.length),
+        getRandomValues: (array: any[]) => crypto.randomBytes(array.length)
       }
     }
     expect(randomBytes(32, <Window>window).length).toBe(32)
@@ -23,7 +23,7 @@ describe(`Key Generation`, () => {
   })
 
   it(`randomBytes unsecure environment`, () => {
-    jest.doMock("crypto", () => null)
+    jest.doMock('crypto', () => null)
 
     expect(() => randomBytes(32)).toThrow()
   })
