@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   randomBytes,
   getCosmosAddress,
@@ -12,8 +8,24 @@ import {
 } from '../src/cosmos-keys'
 
 describe(`Key Generation`, () => {
-  it(`randomBytes polyfilled`, () => {
+  it(`randomBytes browser`, () => {
+    const crypto = require('crypto');
+    const window = {
+      crypto: {
+        getRandomValues: (array: any[]) => crypto.randomBytes(array.length),
+      }
+    }
+    expect(randomBytes(32, <Window>window).length).toBe(32)
+  })
+
+  it(`randomBytes node`, () => {
     expect(randomBytes(32).length).toBe(32)
+  })
+
+  it(`randomBytes unsecure environment`, () => {
+    jest.doMock("crypto", () => null)
+
+    expect(() => randomBytes(32)).toThrow()
   })
 
   it(`should create a wallet from a seed`, async () => {

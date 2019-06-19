@@ -8,11 +8,13 @@ import * as CryptoJS from 'crypto-js'
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
+const windowObject: Window | null = typeof window === 'undefined' ? null : window
+
 // returns a byte buffer of the size specified
-export function randomBytes(size: number): Buffer {
+export function randomBytes(size: number, window = windowObject): Buffer {
   // in browsers
-  if (typeof window !== 'undefined' && window.crypto) {
-    return windowRandomBytes(size)
+  if (window && window.crypto) {
+    return windowRandomBytes(size, window)
   }
 
   try {
@@ -97,7 +99,7 @@ export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey:
   return signature
 }
 
-function windowRandomBytes(size: number) {
+function windowRandomBytes(size: number, window: Window) {
   const chunkSize = size / 4
   let hexString = ''
   let keyContainer = new Uint32Array(chunkSize)
