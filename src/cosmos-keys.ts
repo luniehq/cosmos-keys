@@ -8,6 +8,7 @@ import * as CryptoJS from 'crypto-js'
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
+/* tslint:disable-next-line:strict-type-predicates */
 const windowObject: Window | null = typeof window === 'undefined' ? null : window
 
 // returns a byte buffer of the size specified
