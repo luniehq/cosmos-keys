@@ -7,6 +7,7 @@ const config = {
     library: 'cosmos-keys',
     libraryTarget: 'umd',
     umdNamedDefine: true,
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
