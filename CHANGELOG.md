@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.0.10] - 2019-06-19
+
+### Added
+
+- Added a mechanism to store keys in local storage @faboweb
+
+### Fixed
+
+- Key creation would create sometimes keys of wrong length @faboweb
+
+### Repository
+
+- Made the repository CI ready @faboweb
+
 ## [0.0.9] - 2019-06-02
 
 ### Added
