@@ -35,8 +35,9 @@ export function getStoredWallet(address: string, password: string): Wallet {
 // store a wallet encrypted in localstorage
 export function storeWallet(wallet: Wallet, name: string, password: string): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
-  if (storedWallet)
+  if (storedWallet) {
     throw new Error("The wallet was already stored. Can't store the same wallet again.")
+  }
 
   const ciphertext = encrypt(JSON.stringify(wallet), password)
   addToStorage(name, wallet.cosmosAddress, ciphertext)
@@ -107,8 +108,9 @@ function removeFromStorage(address: string): void {
 function addToIndex(name: string, address: string): void {
   const storedIndex = getWalletIndex()
 
-  if (storedIndex.find(({ name: storedName }) => name === storedName))
+  if (storedIndex.find(({ name: storedName }) => name === storedName)) {
     throw new Error(`Key with that name already exists`)
+  }
 
   storedIndex.push({ name, address })
   localStorage.setItem(KEY_TAG + '-index', JSON.stringify(storedIndex))

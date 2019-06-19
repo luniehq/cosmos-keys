@@ -35,15 +35,23 @@
     "test:prod": "npm run lint && npm run test -- --no-cache",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "prepublishOnly": "npm run build",
-    "precommit": "lint-staged",
     "log": "simsala log",
     "release": "git checkout develop & git pull & git push origin develop:release"
   },
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write",
-      "git add"
-    ]
+  "husky": {
+    "hooks": {
+      "pre-push": "lint-prepush"
+    }
+  },
+  "lint-prepush": {
+    "base": "develop",
+    "tasks": {
+      "{src,test}/**/*.ts": [
+        "prettier --write",
+        "jest --bail --findRelatedTests",
+        "git add"
+      ]
+    }
   },
   "jest": {
     "transform": {
@@ -93,7 +101,7 @@
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
     "jest-localstorage-mock": "^2.4.0",
-    "lint-staged": "^8.0.0",
+    "lint-prepush": "^0.4.1",
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
