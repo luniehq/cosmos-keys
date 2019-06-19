@@ -17,13 +17,15 @@ export function randomBytes(size: number): Buffer {
 
   try {
     // native node crypto
-    const crypto = require('crypto');
+    const crypto = require('crypto')
     return crypto.randomBytes(size)
   } catch (err) {
     // no native node crypto available
   }
 
-  throw new Error("There is no native support for random bytes on this system. Key generation is not safe here.")
+  throw new Error(
+    'There is no native support for random bytes on this system. Key generation is not safe here.'
+  )
 }
 
 export function getNewWalletFromSeed(mnemonic: string): Wallet {

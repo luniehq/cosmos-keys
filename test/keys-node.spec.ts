@@ -2,9 +2,7 @@
  * @jest-environment node
  */
 
-import {
-  randomBytes
-} from '../src/cosmos-keys'
+import { randomBytes } from '../src/cosmos-keys'
 
 describe(`Key Generation in NodeJS`, () => {
   it(`randomBytes polyfilled`, () => {
