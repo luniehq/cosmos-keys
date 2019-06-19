@@ -1,4 +1,4 @@
-import { testPassword, getStoredWallet, storeWallet } from '../src/cosmos-keystore'
+import { testPassword, getStoredWallet, storeWallet, removeWallet } from '../src/cosmos-keystore'
 
 const mockWallet = {
   cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
@@ -27,9 +27,34 @@ describe(`Keystore`, () => {
 
   it(`stores a collection of wallet names to prevent name collision`, () => {
     storeWallet(mockWallet, 'mock-name', 'mock-password')
-    storeWallet(mockWallet2, 'mock-name-2', 'mock-password')
-    storeWallet(mockWallet3, 'mock-name-3', 'mock-password')
-    expect(localStorage.getItem(`cosmos-wallets-index`)).toBe(`mock-name,mock-name-2,mock-name-3`)
+    storeWallet(mockWallet2, 'mock-name2', 'mock-password')
+    storeWallet(mockWallet3, 'mock-name3', 'mock-password')
+    expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
+      {
+        name: `mock-name`,
+        address: mockWallet.cosmosAddress
+      },
+      {
+        name: `mock-name2`,
+        address: mockWallet2.cosmosAddress
+      },
+      {
+        name: `mock-name3`,
+        address: mockWallet3.cosmosAddress
+      }
+    ])
+  })
+
+  it(`prevents you from adding a wallet with the same name twice`, () => {
+    storeWallet(mockWallet, 'mock-name', 'mock-password')
+    expect(() => storeWallet(mockWallet2, 'mock-name', 'mock-password2')).toThrow()
+
+    expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
+      {
+        name: `mock-name`,
+        address: mockWallet.cosmosAddress
+      }
+    ])
   })
 
   it(`loads a stored wallet`, () => {
@@ -38,19 +63,55 @@ describe(`Keystore`, () => {
     expect(key.privateKey).toBe(mockWallet.privateKey)
   })
 
+  it(`signals if there is no stored wallet for an address`, () => {
+    expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).toThrow()
+  })
+
+  it(`signals if the password for the stored wallet is incorrect`, () => {
+    storeWallet(mockWallet, 'mock-name', 'mock-password')
+    expect(() => getStoredWallet(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
+  })
+
   it(`tests if a password is correct for a localy stored key`, () => {
     storeWallet(mockWallet, 'mock-name', 'mock-password')
-    expect(testPassword(mockWallet.cosmosAddress, 'mock-password')).toBe(true)
-    expect(testPassword(mockWallet.cosmosAddress, 'wrong-password')).toBe(false)
+    expect(() => testPassword(mockWallet.cosmosAddress, 'mock-password')).not.toThrow()
+    expect(() => testPassword(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
   })
 
-  it(`prevents you from overriding existing key names`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password')
-    expect(() => storeWallet(mockWallet, 'mock-name', 'mock-password')).toThrowError('')
+  it(`throws if wallet to test password for is not existent for better error output`, () => {
+    expect(() => testPassword(mockWallet.cosmosAddress, 'mock-password')).toThrow()
   })
 
-  it(`prevents you from overriding existing wallets`, () => {
+  it(`prevents you from overwriting existing key names`, () => {
     storeWallet(mockWallet, 'mock-name', 'mock-password')
-    expect(() => storeWallet(mockWallet, 'mock-name2', 'mock-password')).toThrowError('')
+    expect(() => storeWallet(mockWallet, 'mock-name', 'mock-password')).toThrow()
+  })
+
+  it(`prevents you from overwriting existing wallets`, () => {
+    storeWallet(mockWallet, 'mock-name', 'mock-password')
+    expect(() => storeWallet(mockWallet, 'mock-name2', 'mock-password')).toThrow()
+  })
+
+  it(`removes a wallet`, () => {
+    storeWallet(mockWallet, 'mock-name', 'mock-password')
+    storeWallet(mockWallet2, 'mock-name2', 'mock-password')
+    removeWallet(mockWallet.cosmosAddress, 'mock-password')
+    expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).toThrow()
+    expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
+      {
+        name: `mock-name2`,
+        address: mockWallet2.cosmosAddress
+      }
+    ])
+  })
+
+  it(`throws if the password for a wallet while removing is incorrect`, () => {
+    storeWallet(mockWallet, 'mock-name', 'mock-password')
+    expect(() => removeWallet(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
+    expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).not.toThrow()
+  })
+
+  it(`gives an error if the wallet to remove doesn't exist for better error outputs`, () => {
+    expect(() => removeWallet(mockWallet.cosmosAddress, 'mock-password')).toThrow()
   })
 })
