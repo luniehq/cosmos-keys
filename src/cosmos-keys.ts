@@ -21,10 +21,17 @@ export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
   let hexString = ''
   /* istanbul ignore if: not testable on node */
   if (windowCrypto) {
-    let keyContainer = new Uint32Array(size / 4)
+    const chunkSize = size / 4
+    let keyContainer = new Uint32Array(chunkSize)
     keyContainer = windowCrypto.getRandomValues(keyContainer)
+
     for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
-      hexString += keyContainer[keySegment].toString(16) // Convert int to hex
+      let chunk = keyContainer[keySegment].toString(16) // Convert int to hex
+      while (chunk.length < chunkSize) {
+        // fill up so we get equal sized chunks
+        chunk = '0' + chunk
+      }
+      hexString += chunk // join
     }
   } else {
     hexString = CryptoJS.lib.WordArray.random(size).toString()
@@ -59,7 +66,7 @@ export function getWallet(randomBytesFunc: (size: number) => Buffer = randomByte
 // NOTE: this only works with a compressed public key (33 bytes)
 export function getCosmosAddress(publicKey: Buffer): string {
   const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
-  const address = CryptoJS.RIPEMD160(<any>CryptoJS.SHA256(message)).toString()
+  const address = CryptoJS.RIPEMD160(CryptoJS.SHA256(message) as any).toString()
   const cosmosAddress = bech32ify(address, `cosmos`)
 
   return cosmosAddress

@@ -19,21 +19,24 @@ commands:
 
 jobs:
   pendingUpdated:
-    docker: circleci/node:10.15.3
+    docker: 
+      - image: circleci/node:10.15.3
     steps:
       - checkout
       - run: yarn add simsala
       - run: node node_modules/simsala/src/cli.js check --pending-path ./changes
 
   lint:
-    docker: circleci/node:10.15.3
+    docker: 
+      - image: circleci/node:10.15.3
     steps:
       - checkout
       - yarn-install
       - run: yarn run lint
 
   testUnit:
-    docker: circleci/node:10.15.3
+    docker: 
+      - image: circleci/node:10.15.3
     steps:
       - checkout
       - yarn-install
@@ -48,14 +51,15 @@ jobs:
           command: |
             # notify Code Climate of a pending test report using `before-build`
             ./cc-test-reporter before-build
-            yarn run test:unit
+            yarn run test
             # upload test report to Code Climate
-            ./cc-test-reporter format-coverage -t lcov ./test/unit/coverage/lcov.info
+            ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info
             ./cc-test-reporter upload-coverage
           no_output_timeout: 120
 
   security:
-    docker: circleci/node:10.15.3
+    docker: 
+      - image: circleci/node:10.15.3
     steps:
       - checkout
       - run:
@@ -75,7 +79,8 @@ jobs:
 
   # Create release.
   release:
-    docker: circleci/node:10.15.3
+    docker: 
+      - image: circleci/node:10.15.3
     steps:
       - checkout
       - run: |
@@ -86,7 +91,8 @@ jobs:
 
   # Push merges to master immediatly back to develop to stay in sync
   mergeBack:
-    docker: circleci/node:10.15.3
+    docker: 
+      - image: circleci/node:10.15.3
     steps:
       - checkout
       - run:
