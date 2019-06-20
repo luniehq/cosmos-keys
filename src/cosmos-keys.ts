@@ -6,37 +6,29 @@ import * as bech32 from 'bech32'
 import * as secp256k1 from 'secp256k1'
 import * as CryptoJS from 'crypto-js'
 
-let WindowCrypto: Crypto | undefined
-try {
-  WindowCrypto = window ? window.crypto : undefined
-} catch (err) {
-  // ignore this in a node environment like the tests
-}
-
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
-// The CryptoJS random bytes function should not be used in production, as it is not cryptographically safe
-// returns a byte buffer of the size specified
-export function randomBytes(size: number, windowCrypto = WindowCrypto): Buffer {
-  let hexString = ''
-  /* istanbul ignore if: not testable on node */
-  if (windowCrypto) {
-    const chunkSize = size / 4
-    let keyContainer = new Uint32Array(chunkSize)
-    keyContainer = windowCrypto.getRandomValues(keyContainer)
+/* tslint:disable-next-line:strict-type-predicates */
+const windowObject: Window | null = typeof window === 'undefined' ? null : window
 
-    for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
-      let chunk = keyContainer[keySegment].toString(16) // Convert int to hex
-      while (chunk.length < chunkSize) {
-        // fill up so we get equal sized chunks
-        chunk = '0' + chunk
-      }
-      hexString += chunk // join
-    }
-  } else {
-    hexString = CryptoJS.lib.WordArray.random(size).toString()
+// returns a byte buffer of the size specified
+export function randomBytes(size: number, window = windowObject): Buffer {
+  // in browsers
+  if (window && window.crypto) {
+    return windowRandomBytes(size, window)
   }
-  return Buffer.from(hexString, 'hex')
+
+  try {
+    // native node crypto
+    const crypto = require('crypto')
+    return crypto.randomBytes(size)
+  } catch (err) {
+    // no native node crypto available
+  }
+
+  throw new Error(
+    'There is no native support for random bytes on this system. Key generation is not safe here.'
+  )
 }
 
 export function getNewWalletFromSeed(mnemonic: string): Wallet {
@@ -106,4 +98,21 @@ export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey:
   const { signature } = secp256k1.sign(signHash, privateKey)
 
   return signature
+}
+
+function windowRandomBytes(size: number, window: Window) {
+  const chunkSize = size / 4
+  let hexString = ''
+  let keyContainer = new Uint32Array(chunkSize)
+  keyContainer = window.crypto.getRandomValues(keyContainer)
+
+  for (let keySegment = 0; keySegment < keyContainer.length; keySegment++) {
+    let chunk = keyContainer[keySegment].toString(16) // Convert int to hex
+    while (chunk.length < chunkSize) {
+      // fill up so we get equal sized chunks
+      chunk = '0' + chunk
+    }
+    hexString += chunk // join
+  }
+  return Buffer.from(hexString, 'hex')
 }
