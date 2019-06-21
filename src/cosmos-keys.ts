@@ -1,10 +1,9 @@
-/// <reference path="cosmos-keys.d.ts" />
-
 import * as bip39 from 'bip39'
 import * as bip32 from 'bip32'
 import * as bech32 from 'bech32'
 import * as secp256k1 from 'secp256k1'
 import * as CryptoJS from 'crypto-js'
+import { Wallet, StdSignMsg, KeyPair } from './types';
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 

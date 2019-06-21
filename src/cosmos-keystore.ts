@@ -1,4 +1,4 @@
-/// <reference path="cosmos-keys.d.ts" />
+import { Wallet, StoredWallet } from './types';
 
 const CryptoJS = require('crypto-js')
 

@@ -1,26 +1,26 @@
-declare interface KeyPair {
+export interface KeyPair {
   privateKey: Buffer
   publicKey: Buffer
 }
-declare interface Wallet {
+export interface Wallet {
   privateKey: string
   publicKey: string
   cosmosAddress: string
 }
-declare interface StoredWallet {
+export interface StoredWallet {
   name: string
   address: string
   wallet: string // encrypted wallet
 }
-declare interface Coin {
+export interface Coin {
   denom: string
   amount: string
 }
-declare interface Fee {
+export interface Fee {
   amount: Coin[]
   gas: string
 }
-declare interface StdSignMsg {
+export interface StdSignMsg {
   chain_id: string
   account_number: string
   sequence: string
