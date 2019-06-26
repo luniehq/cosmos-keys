@@ -15,7 +15,7 @@ yarn add @lunie/cosmos-keys
 ### Create a wallet
 
 ```js
-import { getWallet } from "@lunie/comos-keys"
+import { getWallet } from "@lunie/cosmos-keys"
 
 const { cosmosAddress, privateKey, publicKey } = getWallet()
 // Attention: protect the `privateKey` at all cost and never display it anywhere!!
