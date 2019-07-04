@@ -15,16 +15,16 @@ yarn add @lunie/cosmos-keys
 ### Create a wallet
 
 ```js
-import { getWallet } from "@lunie/cosmos-keys"
+import { getNewWallet } from "@lunie/cosmos-keys"
 
-const { cosmosAddress, privateKey, publicKey } = getWallet()
+const { cosmosAddress, privateKey, publicKey } = getNewWallet()
 // Attention: protect the `privateKey` at all cost and never display it anywhere!!
 ```
 
 ### Import a seed
 
 ```js
-import { generateWalletFromSeed } from "@lunie/comos-keys"
+import { generateWalletFromSeed } from "@lunie/cosmos-keys"
 
 const seed = ...24 seed words here
 
@@ -35,7 +35,7 @@ const { cosmosAddress, privateKey, publicKey } = generateWalletFromSeed(seed)
 ### Sign a message
 
 ```js
-import { signWithPrivateKey } from "@lunie/comos-keys"
+import { signWithPrivateKey } from "@lunie/cosmos-keys"
 
 const privateKey = Buffer.from(...)
 const signMessage = ... message to sign, generate messages with "@lunie/cosmos-js"
@@ -46,7 +46,7 @@ const signature = signWithPrivateKey(signMessage, privateKey)
 ### Using with cosmos-js
 
 ```js
-import { signWithPrivateKey } from "@lunie/comos-keys"
+import { signWithPrivateKey } from "@lunie/cosmos-keys"
 import Cosmos from "@lunie/cosmos-js"
 
 const privateKey = Buffer.from(...)
