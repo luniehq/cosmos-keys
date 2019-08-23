@@ -1,3 +1,5 @@
+const { IgnorePlugin } = require('webpack')
+
 const config = {
   devtool: "cheap-source-map",
   entry: ['./src/index.ts'],
@@ -28,6 +30,12 @@ const config = {
         exclude: /node_modules/
       }
     ]
-  }
+  },
+  plugins: [
+    new IgnorePlugin({
+      checkContext: context => context.includes('bip39/src/wordlists'),
+      checkResource: resource => resource !== './english.json'
+    })
+  ]
 }
 module.exports = config;
