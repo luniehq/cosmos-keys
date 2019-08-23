@@ -1,3 +1,4 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const { IgnorePlugin } = require('webpack')
 
 const config = {
@@ -32,6 +33,11 @@ const config = {
     ]
   },
   plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: 'bundle_sizes.html'
+    }),
     new IgnorePlugin({
       checkContext: context => context.includes('bip39/src/wordlists'),
       checkResource: resource => resource !== './english.json'
