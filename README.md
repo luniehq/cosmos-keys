@@ -24,11 +24,11 @@ const { cosmosAddress, privateKey, publicKey } = getNewWallet()
 ### Import a seed
 
 ```js
-import { generateWalletFromSeed } from "@lunie/cosmos-keys"
+import { getNewWalletFromSeed } from "@lunie/cosmos-keys"
 
 const seed = ...24 seed words here
 
-const { cosmosAddress, privateKey, publicKey } = generateWalletFromSeed(seed)
+const { cosmosAddress, privateKey, publicKey } = getNewWalletFromSeed(seed)
 // Attention: protect the `privateKey` at all cost and never display it anywhere!!
 ```
 
