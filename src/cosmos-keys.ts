@@ -99,6 +99,14 @@ export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey:
   return signature
 }
 
+export function verifySignature(signMessage: StdSignMsg | string, signature: Buffer, publicKey: Buffer): boolean {
+  const signMessageString: string =
+    typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
+  const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
+
+  return secp256k1.verify(signHash, signature, publicKey)
+}
+
 function windowRandomBytes(size: number, window: Window) {
   const chunkSize = size / 4
   let hexString = ''
