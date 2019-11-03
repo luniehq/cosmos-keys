@@ -49,8 +49,8 @@ const signature = signWithPrivateKey(signMessage, privateKey)
 import { signWithPrivateKey } from "@lunie/cosmos-keys"
 import Cosmos from "@lunie/cosmos-js"
 
-const privateKey = Buffer.from(...)
-const publicKey = Buffer.from(...)
+const privateKey = Buffer.from(...);
+const publicKey = Buffer.from(...);
 
 // init cosmos sender
 const cosmos = Cosmos(STARGATE_URL, ADDRESS);
@@ -66,8 +66,8 @@ const localSigner = (signMessage) => {
   return {
     signature,
     publicKey
-  }
-}
+  };
+};
 
 // send the transaction
 const { included } = await msg.send({ gas: 200000 }, localSigner);
