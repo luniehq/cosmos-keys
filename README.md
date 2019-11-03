@@ -53,11 +53,11 @@ const privateKey = Buffer.from(...)
 const publicKey = Buffer.from(...)
 
 // init cosmos sender
-const cosmos = Cosmos(STARGATE_URL, ADDRESS)
+const cosmos = Cosmos(STARGATE_URL, ADDRESS);
 
 // create message
 const msg = cosmos
-  .MsgSend({toAddress: 'cosmos1abcd09876', amounts: [{ denom: 'stake', amount: 10 }})
+  .MsgSend({toAddress: 'cosmos1abcd09876', amounts: [{ denom: 'stake', amount: 10 }]});
 
 // create a signer from this local js signer library
 const localSigner = (signMessage) => {
@@ -70,8 +70,8 @@ const localSigner = (signMessage) => {
 }
 
 // send the transaction
-const { included }= await msg.send({ gas: 200000 }, localSigner)
+const { included } = await msg.send({ gas: 200000 }, localSigner);
 
 // await tx to be included in a block
-await included()
+await included();
 ```
