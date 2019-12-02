@@ -74,11 +74,7 @@ function deriveMasterKey(mnemonic: string): bip32.BIP32Interface {
 
 function deriveKeypair(masterKey: bip32.BIP32Interface): KeyPair {
   const cosmosHD = masterKey.derivePath(hdPathAtom)
-  const privateKey = cosmosHD.privateKey
-
-  if (!privateKey) {
-    throw new Error('Private key must be defined!');
-  }
+  const privateKey = cosmosHD.privateKey as Buffer
 
   const publicKey = secp256k1.publicKeyCreate(privateKey, true)
 
