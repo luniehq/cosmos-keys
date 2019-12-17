@@ -1,3 +1,6 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const { IgnorePlugin } = require('webpack')
+
 const config = {
   devtool: "cheap-source-map",
   entry: ['./src/index.ts'],
@@ -28,6 +31,17 @@ const config = {
         exclude: /node_modules/
       }
     ]
-  }
+  },
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: '../bundle_analyzer/bundle_sizes.html'
+    }),
+    new IgnorePlugin({
+      checkContext: context => context.includes('bip39/src/wordlists'),
+      checkResource: resource => resource !== './english.json'
+    })
+  ]
 }
-module.exports = config;
+module.exports = config
