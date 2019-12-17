@@ -30,10 +30,10 @@ export function randomBytes(size: number, window = windowObject): Buffer {
   )
 }
 
-export function getNewWalletFromSeed(mnemonic: string, networkPrefix: string): Wallet {
+export function getNewWalletFromSeed(mnemonic: string, bech32Prefix: string): Wallet {
   const masterKey = deriveMasterKey(mnemonic)
   const { privateKey, publicKey } = deriveKeypair(masterKey)
-  const cosmosAddress = getCosmosAddress(publicKey, networkPrefix)
+  const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
@@ -51,22 +51,17 @@ export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes)
 
 export function getNewWallet(
   randomBytesFunc: (size: number) => Buffer = randomBytes,
-  networkPrefix: string
+  bech32Prefix: string
 ): Wallet {
   const mnemonic = getSeed(randomBytesFunc)
-  return getNewWalletFromSeed(mnemonic, networkPrefix)
+  return getNewWalletFromSeed(mnemonic, bech32Prefix)
 }
 
 // NOTE: this only works with a compressed public key (33 bytes)
-export function getCosmosAddress(publicKey: Buffer, networkPrefix: string): string {
+export function getCosmosAddress(publicKey: Buffer, bech32Prefix: string): string {
   const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
   const address = CryptoJS.RIPEMD160(CryptoJS.SHA256(message) as any).toString()
-  if (networkPrefix === `regen`) {
-    networkPrefix = `xrn:`
-  } else if (networkPrefix === `livepeer`) {
-    throw new Error(`No current support for Livepeer accounts. Coming soon`)
-  }
-  const cosmosAddress = bech32ify(address, networkPrefix)
+  const cosmosAddress = bech32ify(address, bech32Prefix)
 
   return cosmosAddress
 }
