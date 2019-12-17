@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.0.12] - 2019-12-17
+
+### Added
+
+- Use any bech32 prefix to create accounts @Bitcoinera
+
+### Repository
+
+- Remove all languages for bip39 wordlists but english to reduce the size of the bundle @colw
+
 ## [0.0.11] - 2019-10-07
 
 ### Added
