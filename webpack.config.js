@@ -36,7 +36,7 @@ const config = {
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: false,
-      reportFilename: 'bundle_sizes.html'
+      reportFilename: '../bundle_analyzer/bundle_sizes.html'
     }),
     new IgnorePlugin({
       checkContext: context => context.includes('bip39/src/wordlists'),
