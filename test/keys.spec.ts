@@ -30,7 +30,7 @@ describe(`Key Generation`, () => {
   })
 
   it(`should create a wallet from a seed`, async () => {
-    expect(await getNewWalletFromSeed(`a b c`)).toEqual({
+    expect(await getNewWalletFromSeed(`a b c`, 'cosmos')).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
       publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`
@@ -54,13 +54,15 @@ describe(`Key Generation`, () => {
 
   it(`create a random wallet`, () => {
     expect(
-      getNewWallet(() =>
-        Buffer.from(
-          Array(64)
-            .fill(0)
-            .join(``),
-          'hex'
-        )
+      getNewWallet(
+        () =>
+          Buffer.from(
+            Array(64)
+              .fill(0)
+              .join(``),
+            'hex'
+          ),
+        'cosmos'
       )
     ).toEqual({
       cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
@@ -88,15 +90,17 @@ describe(`Address generation`, () => {
     const vectors = [
       {
         pubkey: `52FDFC072182654F163F5F0F9A621D729566C74D10037C4D7BBB0407D1E2C64981`,
-        address: `cosmos1v3z3242hq7xrms35gu722v4nt8uux8nvug5gye`
+        address: `cosmos1v3z3242hq7xrms35gu722v4nt8uux8nvug5gye`,
+        prefix: `cosmos`
       },
       {
         pubkey: `855AD8681D0D86D1E91E00167939CB6694D2C422ACD208A0072939487F6999EB9D`,
-        address: `cosmos1hrtz7umxfyzun8v2xcas0v45hj2uhp6sgdpac8`
+        address: `terra1hrtz7umxfyzun8v2xcas0v45hj2uhp6swfma68`,
+        prefix: `terra`
       }
     ]
-    vectors.forEach(({ pubkey, address }) => {
-      expect(getCosmosAddress(Buffer.from(pubkey, 'hex'))).toBe(address)
+    vectors.forEach(({ pubkey, address, prefix }) => {
+      expect(getCosmosAddress(Buffer.from(pubkey, 'hex'), prefix)).toBe(address)
     })
   })
 })
@@ -179,15 +183,21 @@ describe(`Verifying`, () => {
     ]
 
     vectors.forEach(({ publicKey, signMessage, signature }) => {
-      const publicKeyBuffer = Buffer.from(publicKey, 'hex');
-      const signatureBuffer = Buffer.from(signature, 'base64');
-      expect(verifySignature(signMessage, signatureBuffer, publicKeyBuffer)).toEqual(true);
+      const publicKeyBuffer = Buffer.from(publicKey, 'hex')
+      const signatureBuffer = Buffer.from(signature, 'base64')
+      expect(verifySignature(signMessage, signatureBuffer, publicKeyBuffer)).toEqual(true)
     })
   })
 
   it(`should fail on invalid signature`, () => {
-    const publicKey = Buffer.from(`03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`, 'hex');
-    const signature = Buffer.from(`YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`, 'base64');
-    expect(verifySignature('abcdefg', signature, publicKey)).toEqual(false);
+    const publicKey = Buffer.from(
+      `03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`,
+      'hex'
+    )
+    const signature = Buffer.from(
+      `YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`,
+      'base64'
+    )
+    expect(verifySignature('abcdefg', signature, publicKey)).toEqual(false)
   })
 })

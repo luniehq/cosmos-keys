@@ -30,10 +30,10 @@ export function randomBytes(size: number, window = windowObject): Buffer {
   )
 }
 
-export function getNewWalletFromSeed(mnemonic: string): Wallet {
+export function getNewWalletFromSeed(mnemonic: string, bech32Prefix: string): Wallet {
   const masterKey = deriveMasterKey(mnemonic)
   const { privateKey, publicKey } = deriveKeypair(masterKey)
-  const cosmosAddress = getCosmosAddress(publicKey)
+  const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
@@ -49,16 +49,19 @@ export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes)
   return mnemonic
 }
 
-export function getNewWallet(randomBytesFunc: (size: number) => Buffer = randomBytes): Wallet {
+export function getNewWallet(
+  randomBytesFunc: (size: number) => Buffer = randomBytes,
+  bech32Prefix: string
+): Wallet {
   const mnemonic = getSeed(randomBytesFunc)
-  return getNewWalletFromSeed(mnemonic)
+  return getNewWalletFromSeed(mnemonic, bech32Prefix)
 }
 
 // NOTE: this only works with a compressed public key (33 bytes)
-export function getCosmosAddress(publicKey: Buffer): string {
+export function getCosmosAddress(publicKey: Buffer, bech32Prefix: string): string {
   const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
   const address = CryptoJS.RIPEMD160(CryptoJS.SHA256(message) as any).toString()
-  const cosmosAddress = bech32ify(address, `cosmos`)
+  const cosmosAddress = bech32ify(address, bech32Prefix)
 
   return cosmosAddress
 }
