@@ -30,7 +30,7 @@ describe(`Key Generation`, () => {
   })
 
   it(`should create a wallet from a seed`, async () => {
-    expect(await getNewWalletFromSeed(`a b c`, "cosmos")).toEqual({
+    expect(await getNewWalletFromSeed(`a b c`, 'cosmos')).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
       publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`
@@ -54,13 +54,15 @@ describe(`Key Generation`, () => {
 
   it(`create a random wallet`, () => {
     expect(
-      getNewWallet(() =>
-        Buffer.from(
-          Array(64)
-            .fill(0)
-            .join(``),
-          'hex'
-        ), "cosmos"
+      getNewWallet(
+        () =>
+          Buffer.from(
+            Array(64)
+              .fill(0)
+              .join(``),
+            'hex'
+          ),
+        'cosmos'
       )
     ).toEqual({
       cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
@@ -181,15 +183,21 @@ describe(`Verifying`, () => {
     ]
 
     vectors.forEach(({ publicKey, signMessage, signature }) => {
-      const publicKeyBuffer = Buffer.from(publicKey, 'hex');
-      const signatureBuffer = Buffer.from(signature, 'base64');
-      expect(verifySignature(signMessage, signatureBuffer, publicKeyBuffer)).toEqual(true);
+      const publicKeyBuffer = Buffer.from(publicKey, 'hex')
+      const signatureBuffer = Buffer.from(signature, 'base64')
+      expect(verifySignature(signMessage, signatureBuffer, publicKeyBuffer)).toEqual(true)
     })
   })
 
   it(`should fail on invalid signature`, () => {
-    const publicKey = Buffer.from(`03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`, 'hex');
-    const signature = Buffer.from(`YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`, 'base64');
-    expect(verifySignature('abcdefg', signature, publicKey)).toEqual(false);
+    const publicKey = Buffer.from(
+      `03ab1ebbb21aee35154e36aaebc25067177f783f7e967c9d6493e8920c05e40eb5`,
+      'hex'
+    )
+    const signature = Buffer.from(
+      `YjJhlAf7aCnUtLyBNDp9e6LKuNgV7hJC3rmm0Wro5nBsIPVtWzjuobsp/AhR5Kht+HcRF2zBq4AfoNQMIbY6fw==`,
+      'base64'
+    )
+    expect(verifySignature('abcdefg', signature, publicKey)).toEqual(false)
   })
 })
