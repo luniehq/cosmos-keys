@@ -3,7 +3,7 @@ import * as bip32 from 'bip32'
 import * as bech32 from 'bech32'
 import * as secp256k1 from 'secp256k1'
 import * as CryptoJS from 'crypto-js'
-import { Wallet, StdSignMsg, KeyPair } from './types';
+import { Wallet, StdSignMsg, KeyPair } from './types'
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
@@ -100,7 +100,11 @@ export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey:
   return signature
 }
 
-export function verifySignature(signMessage: StdSignMsg | string, signature: Buffer, publicKey: Buffer): boolean {
+export function verifySignature(
+  signMessage: StdSignMsg | string,
+  signature: Buffer,
+  publicKey: Buffer
+): boolean {
   const signMessageString: string =
     typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
   const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
