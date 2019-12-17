@@ -57,7 +57,7 @@ const cosmos = Cosmos(STARGATE_URL, ADDRESS)
 
 // create message
 const msg = cosmos
-  .MsgSend({toAddress: 'cosmos1abcd09876', amounts: [{ denom: 'stake', amount: 10 }})
+  .MsgSend({toAddress: 'cosmos1abcd09876', amounts: [{ denom: 'stake', amount: 10 }]})
 
 // create a signer from this local js signer library
 const localSigner = (signMessage) => {
