@@ -20,7 +20,7 @@ commands:
 jobs:
   pendingUpdated:
     docker: 
-      - image: circleci/node:10.15.3
+      - image: circleci/node:12
     steps:
       - checkout
       - run: yarn add simsala
@@ -28,7 +28,7 @@ jobs:
 
   lint:
     docker: 
-      - image: circleci/node:10.15.3
+      - image: circleci/node:12
     steps:
       - checkout
       - yarn-install
@@ -36,7 +36,7 @@ jobs:
 
   testUnit:
     docker: 
-      - image: circleci/node:10.15.3
+      - image: circleci/node:12
     steps:
       - checkout
       - yarn-install
@@ -59,7 +59,7 @@ jobs:
 
   security:
     docker: 
-      - image: circleci/node:10.15.3
+      - image: circleci/node:12
     steps:
       - checkout
       - run:
@@ -80,7 +80,7 @@ jobs:
   # Create release.
   release:
     docker: 
-      - image: circleci/node:10.15.3
+      - image: circleci/node:12
     steps:
       - checkout
       - run: |
@@ -92,7 +92,7 @@ jobs:
   # Push merges to master immediatly back to develop to stay in sync
   mergeBack:
     docker: 
-      - image: circleci/node:10.15.3
+      - image: circleci/node:12
     steps:
       - checkout
       - run:

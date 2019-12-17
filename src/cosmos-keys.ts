@@ -63,7 +63,7 @@ export function getCosmosAddress(publicKey: Buffer): string {
   return cosmosAddress
 }
 
-function deriveMasterKey(mnemonic: string): bip32.BIP32 {
+function deriveMasterKey(mnemonic: string): bip32.BIP32Interface {
   // throws if mnemonic is invalid
   bip39.validateMnemonic(mnemonic)
 
@@ -72,9 +72,10 @@ function deriveMasterKey(mnemonic: string): bip32.BIP32 {
   return masterKey
 }
 
-function deriveKeypair(masterKey: bip32.BIP32): KeyPair {
+function deriveKeypair(masterKey: bip32.BIP32Interface): KeyPair {
   const cosmosHD = masterKey.derivePath(hdPathAtom)
-  const privateKey = cosmosHD.privateKey
+  const privateKey = cosmosHD.privateKey as Buffer
+
   const publicKey = secp256k1.publicKeyCreate(privateKey, true)
 
   return {
