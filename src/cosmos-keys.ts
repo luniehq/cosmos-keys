@@ -30,9 +30,9 @@ export function randomBytes(size: number, window = windowObject): Buffer {
   )
 }
 
-export function getNewWalletFromSeed(mnemonic: string, bech32Prefix: string): Wallet {
+export function getNewWalletFromSeed(mnemonic: string, bech32Prefix: string, hdPath: string = hdPathAtom): Wallet {
   const masterKey = deriveMasterKey(mnemonic)
-  const { privateKey, publicKey } = deriveKeypair(masterKey)
+  const { privateKey, publicKey } = deriveKeypair(masterKey, hdPath)
   const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
   return {
     privateKey: privateKey.toString('hex'),
@@ -75,8 +75,8 @@ function deriveMasterKey(mnemonic: string): bip32.BIP32Interface {
   return masterKey
 }
 
-function deriveKeypair(masterKey: bip32.BIP32Interface): KeyPair {
-  const cosmosHD = masterKey.derivePath(hdPathAtom)
+function deriveKeypair(masterKey: bip32.BIP32Interface, hdPath: string): KeyPair {
+  const cosmosHD = masterKey.derivePath(hdPath)
   const privateKey = cosmosHD.privateKey as Buffer
 
   const publicKey = secp256k1.publicKeyCreate(privateKey, true)
