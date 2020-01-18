@@ -35,6 +35,11 @@ describe(`Key Generation`, () => {
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
       publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`
     })
+    expect(await getNewWalletFromSeed(`a b c`, 'mesgtest', "44'/470'/0'/0/0")).toEqual({
+      cosmosAddress: `mesgtest1wna6lpw7e2yv9u2vxw4zl5vg223yf56fuadzsa`,
+      privateKey: `bab0764add9eaa7a9a61fdb61c3cd80404bf912543079fe6edcb36ec3b9c21d7`,
+      publicKey: `02eb47a78f460f91a481ddfdf5f5fa7979389d7c994e92e58d9f2b88af2dcf1866`
+    })
   })
 
   it(`create a seed`, () => {
