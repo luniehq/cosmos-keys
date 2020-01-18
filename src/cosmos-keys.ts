@@ -51,10 +51,11 @@ export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes)
 
 export function getNewWallet(
   randomBytesFunc: (size: number) => Buffer = randomBytes,
-  bech32Prefix: string
+  bech32Prefix: string,
+  hdPath: string = hdPathAtom
 ): Wallet {
   const mnemonic = getSeed(randomBytesFunc)
-  return getNewWalletFromSeed(mnemonic, bech32Prefix)
+  return getNewWalletFromSeed(mnemonic, bech32Prefix, hdPath)
 }
 
 // NOTE: this only works with a compressed public key (33 bytes)
