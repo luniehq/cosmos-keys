@@ -11,6 +11,7 @@ export interface StoredWallet {
   name: string
   address: string
   wallet: string // encrypted wallet
+  network?: string
 }
 export interface Coin {
   denom: string

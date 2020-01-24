@@ -12,6 +12,9 @@ const mockWallet2 = Object.assign({}, mockWallet, {
 const mockWallet3 = Object.assign({}, mockWallet, {
   cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mh3`
 })
+const mockWallet4 = Object.assign({}, mockWallet, {
+  cosmosAddress: `xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`
+})
 
 describe(`Keystore`, () => {
   beforeEach(() => {
@@ -23,6 +26,15 @@ describe(`Keystore`, () => {
     expect(
       localStorage.getItem(`cosmos-wallets-cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`)
     ).toBeDefined()
+  })
+
+  it(`check network is set`, () => {
+    storeWallet(mockWallet4, 'mock-name4', 'mock-password', 'regen-testnet')
+    expect(
+      localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`)
+    ).toBeDefined()
+    const wallet = JSON.parse(localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`) || '[]')
+    expect(wallet.network).toEqual('regen-testnet')
   })
 
   it(`stores a collection of wallet names to prevent name collision`, () => {
