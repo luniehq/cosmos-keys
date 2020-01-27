@@ -33,7 +33,7 @@ describe(`Keystore`, () => {
     expect(
       localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`)
     ).toBeDefined()
-    const wallet = JSON.parse(localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`) || '[]')
+    const wallet = JSON.parse(localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`) || '{}')
     expect(wallet.network).toEqual('regen-testnet')
   })
 
