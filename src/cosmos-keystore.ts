@@ -1,4 +1,4 @@
-import { Wallet, StoredWallet } from './types';
+import { Wallet, StoredWallet } from './types'
 
 const CryptoJS = require('crypto-js')
 
@@ -33,7 +33,12 @@ export function getStoredWallet(address: string, password: string): Wallet {
 }
 
 // store a wallet encrypted in localstorage
-export function storeWallet(wallet: Wallet, name: string, password: string, network?: string): void {
+export function storeWallet(
+  wallet: Wallet,
+  name: string,
+  password: string,
+  network: string
+): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
     throw new Error("The wallet was already stored. Can't store the same wallet again.")
@@ -86,7 +91,7 @@ function loadFromStorage(address: string): StoredWallet | null {
 }
 
 // stores an encrypted wallet in localstorage
-function addToStorage(name: string, address: string, ciphertext: string, network?: string): void {
+function addToStorage(name: string, address: string, ciphertext: string, network: string): void {
   addToIndex(name, address)
 
   const storedWallet: StoredWallet = {
