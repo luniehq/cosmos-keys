@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.2.1] - 2020-01-29
+
+### Changed
+
+- [#31](https://github.com/cosmos/lunie/pull/31) Enrich wallets info with network value @iambeone
+
 ## [0.2.0] - 2020-01-27
 
 ### Added
