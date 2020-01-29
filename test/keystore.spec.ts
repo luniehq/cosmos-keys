@@ -1,4 +1,4 @@
-import { testPassword, getStoredWallet, storeWallet, removeWallet } from '../src/cosmos-keystore'
+import { testPassword, getStoredWallet, storeWallet, removeWallet, getWalletIndex } from '../src/cosmos-keystore'
 
 const mockWallet = {
   cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
@@ -126,5 +126,19 @@ describe(`Keystore`, () => {
 
   it(`gives an error if the wallet to remove doesn't exist for better error outputs`, () => {
     expect(() => removeWallet(mockWallet.cosmosAddress, 'mock-password')).toThrow()
+  })
+
+  it(`store index data and enrich it with network data`, () => {
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet')
+    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet')
+    storeWallet(mockWallet3, 'mock-name3', 'mock-password', 'regen-testnet')
+    // get enriched version
+    const wallets = getWalletIndex()
+    const expectedValue = [{
+      address: mockWallet2.cosmosAddress,
+      name: 'mock-name2',
+      network: 'regen-testnet'
+    }]
+    expect(wallets).toEqual(expect.arrayContaining(expectedValue))
   })
 })
