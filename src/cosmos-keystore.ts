@@ -1,4 +1,4 @@
-import { Wallet, StoredWallet, WalletIndex } from './types'
+import { Wallet, StoredWallet, StoredSeed, WalletIndex } from './types'
 
 const CryptoJS = require('crypto-js')
 
@@ -32,6 +32,22 @@ export function getStoredWallet(address: string, password: string): Wallet {
   }
 }
 
+export function getStoredSeedFromName(name: string, password: string): string {
+  const storedSeed = loadSeedFromStorage(name)
+  if (!storedSeed) {
+    throw new Error('No wallet found for requested address')
+  }
+
+  try {
+    const decrypted = decrypt(storedSeed.seed, password)
+    const seed = JSON.parse(decrypted)
+
+    return seed
+  } catch (err) {
+    throw new Error(`Incorrect password`)
+  }
+}
+
 // store a wallet encrypted in localstorage
 export function storeWallet(
   wallet: Wallet,
@@ -58,6 +74,20 @@ export function removeWallet(address: string, password: string): void {
   testPassword(address, password)
 
   removeFromStorage(address)
+}
+
+export function storeSeed(
+  seed: string,
+  name: string,
+  password: string,
+): void {
+  const storedSeed = loadFromStorage(seed)
+  if (storedSeed) {
+    throw new Error("The wallet was already stored. Can't store the same wallet again.")
+  }
+
+  const ciphertext = encrypt(JSON.stringify(seed), password)
+  addSeedToStorage(name, seed, ciphertext)
 }
 
 // test password by trying to decrypt a key with said password
@@ -102,6 +132,15 @@ function loadFromStorage(address: string): StoredWallet | null {
   return JSON.parse(storedKey)
 }
 
+// loads an encrypted seed from localstorage
+function loadSeedFromStorage(name: string): StoredSeed | null {
+  const storedKey = localStorage.getItem(KEY_TAG + '-' + name)
+  if (!storedKey) {
+    return null
+  }
+  return JSON.parse(storedKey)
+}
+
 // stores an encrypted wallet in localstorage
 function addToStorage(name: string, address: string, ciphertext: string, network: string): void {
   addToIndex(name, address)
@@ -114,6 +153,18 @@ function addToStorage(name: string, address: string, ciphertext: string, network
   }
 
   localStorage.setItem(KEY_TAG + '-' + address, JSON.stringify(storedWallet))
+}
+
+// stores an encrypted wallet in localstorage
+function addSeedToStorage(name: string, seed: string, ciphertext: string): void {
+  addToIndex(name, seed)
+
+  const storedSeed: StoredSeed = {
+    name,
+    seed
+  }
+
+  localStorage.setItem(KEY_TAG + '-' + name, JSON.stringify(storedSeed))
 }
 
 // removed a wallet from localstorage
