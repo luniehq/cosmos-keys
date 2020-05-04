@@ -1,7 +1,8 @@
 import * as bip39 from 'bip39'
 import * as bip32 from 'bip32'
 import * as bech32 from 'bech32'
-import * as secp256k1 from 'secp256k1'
+// @ts-ignore - there are no types for bcrypto
+import { secp256k1 } from 'bcrypto'
 import * as CryptoJS from 'crypto-js'
 import { Wallet, StdSignMsg, KeyPair } from './types'
 
@@ -30,7 +31,11 @@ export function randomBytes(size: number, window = windowObject): Buffer {
   )
 }
 
-export function getNewWalletFromSeed(mnemonic: string, bech32Prefix: string, hdPath: string = hdPathAtom): Wallet {
+export function getNewWalletFromSeed(
+  mnemonic: string,
+  bech32Prefix: string,
+  hdPath: string = hdPathAtom
+): Wallet {
   const masterKey = deriveMasterKey(mnemonic)
   const { privateKey, publicKey } = deriveKeypair(masterKey, hdPath)
   const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
@@ -99,9 +104,8 @@ export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey:
   const signMessageString: string =
     typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
   const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
-  const { signature } = secp256k1.sign(signHash, privateKey)
 
-  return signature
+  return secp256k1.sign(signHash, privateKey)
 }
 
 export function verifySignature(
