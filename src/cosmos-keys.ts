@@ -1,9 +1,10 @@
 import * as bip39 from 'bip39'
 import * as bip32 from 'bip32'
 import * as bech32 from 'bech32'
-import * as secp256k1 from 'secp256k1'
+// @ts-ignore - there are no types for bcrypto
+import { secp256k1 } from 'bcrypto'
 import * as CryptoJS from 'crypto-js'
-import { Wallet, StdSignMsg, KeyPair } from './types';
+import { Wallet, StdSignMsg, KeyPair } from './types'
 
 const hdPathAtom = `m/44'/118'/0'/0/0` // key controlling ATOM allocation
 
@@ -30,10 +31,14 @@ export function randomBytes(size: number, window = windowObject): Buffer {
   )
 }
 
-export function getNewWalletFromSeed(mnemonic: string): Wallet {
+export function getNewWalletFromSeed(
+  mnemonic: string,
+  bech32Prefix: string,
+  hdPath: string = hdPathAtom
+): Wallet {
   const masterKey = deriveMasterKey(mnemonic)
-  const { privateKey, publicKey } = deriveKeypair(masterKey)
-  const cosmosAddress = getCosmosAddress(publicKey)
+  const { privateKey, publicKey } = deriveKeypair(masterKey, hdPath)
+  const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
@@ -49,21 +54,25 @@ export function getSeed(randomBytesFunc: (size: number) => Buffer = randomBytes)
   return mnemonic
 }
 
-export function getNewWallet(randomBytesFunc: (size: number) => Buffer = randomBytes): Wallet {
+export function getNewWallet(
+  randomBytesFunc: (size: number) => Buffer = randomBytes,
+  bech32Prefix: string,
+  hdPath: string = hdPathAtom
+): Wallet {
   const mnemonic = getSeed(randomBytesFunc)
-  return getNewWalletFromSeed(mnemonic)
+  return getNewWalletFromSeed(mnemonic, bech32Prefix, hdPath)
 }
 
 // NOTE: this only works with a compressed public key (33 bytes)
-export function getCosmosAddress(publicKey: Buffer): string {
+export function getCosmosAddress(publicKey: Buffer, bech32Prefix: string): string {
   const message = CryptoJS.enc.Hex.parse(publicKey.toString('hex'))
   const address = CryptoJS.RIPEMD160(CryptoJS.SHA256(message) as any).toString()
-  const cosmosAddress = bech32ify(address, `cosmos`)
+  const cosmosAddress = bech32ify(address, bech32Prefix)
 
   return cosmosAddress
 }
 
-function deriveMasterKey(mnemonic: string): bip32.BIP32 {
+function deriveMasterKey(mnemonic: string): bip32.BIP32Interface {
   // throws if mnemonic is invalid
   bip39.validateMnemonic(mnemonic)
 
@@ -72,9 +81,10 @@ function deriveMasterKey(mnemonic: string): bip32.BIP32 {
   return masterKey
 }
 
-function deriveKeypair(masterKey: bip32.BIP32): KeyPair {
-  const cosmosHD = masterKey.derivePath(hdPathAtom)
-  const privateKey = cosmosHD.privateKey
+function deriveKeypair(masterKey: bip32.BIP32Interface, hdPath: string): KeyPair {
+  const cosmosHD = masterKey.derivePath(hdPath)
+  const privateKey = cosmosHD.privateKey as Buffer
+
   const publicKey = secp256k1.publicKeyCreate(privateKey, true)
 
   return {
@@ -94,12 +104,15 @@ export function signWithPrivateKey(signMessage: StdSignMsg | string, privateKey:
   const signMessageString: string =
     typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
   const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)
-  const { signature } = secp256k1.sign(signHash, privateKey)
 
-  return signature
+  return secp256k1.sign(signHash, privateKey)
 }
 
-export function verifySignature(signMessage: StdSignMsg | string, signature: Buffer, publicKey: Buffer): boolean {
+export function verifySignature(
+  signMessage: StdSignMsg | string,
+  signature: Buffer,
+  publicKey: Buffer
+): boolean {
   const signMessageString: string =
     typeof signMessage === 'string' ? signMessage : JSON.stringify(signMessage)
   const signHash = Buffer.from(CryptoJS.SHA256(signMessageString).toString(), `hex`)

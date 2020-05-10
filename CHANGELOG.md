@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.2.1] - 2020-01-29
+
+### Changed
+
+- [#31](https://github.com/cosmos/lunie/pull/31) Enrich wallets info with network value @iambeone
+
+## [0.2.0] - 2020-01-27
+
+### Added
+
+- [#30](https://github.com/cosmos/lunie/issues/30) Storing network value in wallet @iambeone
+
+## [0.0.12] - 2019-12-17
+
+### Added
+
+- Use any bech32 prefix to create accounts @Bitcoinera
+
+### Repository
+
+- Remove all languages for bip39 wordlists but english to reduce the size of the bundle @colw
+
+## [0.0.11] - 2019-10-07
+
+### Added
+
+- Made library node compatible @AlexBHarley @faboweb
+
 ## [0.0.10] - 2019-06-19
 
 ### Added

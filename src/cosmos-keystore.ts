@@ -1,4 +1,4 @@
-import { Wallet, StoredWallet } from './types';
+import { Wallet, StoredWallet, WalletIndex } from './types'
 
 const CryptoJS = require('crypto-js')
 
@@ -33,14 +33,19 @@ export function getStoredWallet(address: string, password: string): Wallet {
 }
 
 // store a wallet encrypted in localstorage
-export function storeWallet(wallet: Wallet, name: string, password: string): void {
+export function storeWallet(
+  wallet: Wallet,
+  name: string,
+  password: string,
+  network: string
+): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
     throw new Error("The wallet was already stored. Can't store the same wallet again.")
   }
 
   const ciphertext = encrypt(JSON.stringify(wallet), password)
-  addToStorage(name, wallet.cosmosAddress, ciphertext)
+  addToStorage(name, wallet.cosmosAddress, ciphertext, network)
 }
 
 // store a wallet encrypted in localstorage
@@ -72,8 +77,20 @@ export function testPassword(address: string, password: string) {
 }
 
 // returns the index of the stored wallets
-export function getWalletIndex(): [{ name: string; address: string }] {
-  return JSON.parse(localStorage.getItem(KEY_TAG + '-index') || '[]')
+export function getWalletIndex(enriched:Boolean = true): WalletIndex[] {  
+  let wallets = JSON.parse(localStorage.getItem(KEY_TAG + '-index') || '[]')
+  if(enriched){
+    // add network data to index
+    return wallets.map((wallet:WalletIndex) => {
+      const walletData = loadFromStorage(wallet.address)
+      if(walletData && walletData.network){
+        // enrich with network data
+        wallet.network = walletData.network
+      }
+      return wallet
+    })
+  }
+  return wallets
 }
 
 // loads an encrypted wallet from localstorage
@@ -86,13 +103,14 @@ function loadFromStorage(address: string): StoredWallet | null {
 }
 
 // stores an encrypted wallet in localstorage
-function addToStorage(name: string, address: string, ciphertext: string): void {
+function addToStorage(name: string, address: string, ciphertext: string, network: string): void {
   addToIndex(name, address)
 
   const storedWallet: StoredWallet = {
     name,
     address,
-    wallet: ciphertext
+    wallet: ciphertext,
+    network
   }
 
   localStorage.setItem(KEY_TAG + '-' + address, JSON.stringify(storedWallet))
@@ -106,7 +124,7 @@ function removeFromStorage(address: string): void {
 
 // stores the names of the keys to prevent name collision
 function addToIndex(name: string, address: string): void {
-  const storedIndex = getWalletIndex()
+  const storedIndex = getWalletIndex(false)
 
   if (storedIndex.find(({ name: storedName }) => name === storedName)) {
     throw new Error(`Key with that name already exists`)
@@ -117,7 +135,7 @@ function addToIndex(name: string, address: string): void {
 }
 
 function removeFromIndex(address: string): void {
-  const storedIndex = getWalletIndex()
+  const storedIndex = getWalletIndex(false)
 
   const updatedIndex = storedIndex.filter(({ address: storedAddress }) => storedAddress !== address)
   localStorage.setItem(KEY_TAG + '-index', JSON.stringify(updatedIndex))
