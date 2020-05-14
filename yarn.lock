@@ -3771,6 +3771,11 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
+lodash.groupby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.groupby/-/lodash.groupby-4.6.0.tgz#0b08a1dcf68397c397855c3239783832df7403d1"
+  integrity sha1-Cwih3PaDl8OXhVwyOXg4Mt90A9E=
+
 lodash.memoize@4.x:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -5161,14 +5166,15 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==
 
-simsala@0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/simsala/-/simsala-0.0.18.tgz#441f5e6799a896016216f07bbbc0ddf2b5a6e421"
-  integrity sha512-gB3ehpGxigdZ2+riCznVHZk4cQdqFs2c6d+p2UKZJun5KuCoEggG4WcJMGm6iF72q3nx5R8NB3OQWay4XKPN1A==
+simsala@0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/simsala/-/simsala-0.0.21.tgz#92c3b27033bd54efa472cb45b3a8ac453891bb82"
+  integrity sha512-/Nti+CK8+vvvHgTyIXVkjEF30XYl3GsERZ5Nmd/dEjPchLcgtGN9aheQ1W9XL0jM05NxeyT3IY1NVtuSquhHqw==
   dependencies:
     axios "^0.18.0"
     commander "^2.20.0"
     inquirer "^6.2.2"
+    lodash.groupby "^4.6.0"
     semver "^6.0.0"
 
 sisteransi@^1.0.4:
