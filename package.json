@@ -105,7 +105,7 @@
     "simsala": "0.0.21",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.0.2",
-    "ts-node": "^7.0.1",
+    "ts-node": "^8.10.1",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
