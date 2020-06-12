@@ -17,6 +17,7 @@ export interface WalletIndex {
   name: string
   address: string
   network?: string // not stored, but enriched with
+  wallet: string // encrypted wallet
 }
 export interface Coin {
   denom: string
