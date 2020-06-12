@@ -33,12 +33,7 @@ export function getStoredWallet(address: string, password: string): Wallet {
 }
 
 // store a wallet encrypted in localstorage
-export function storeWallet(
-  wallet: Wallet,
-  name: string,
-  password: string,
-  network: string
-): void {
+export function storeWallet(wallet: Wallet, name: string, password: string, network: string): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
     throw new Error("The wallet was already stored. Can't store the same wallet again.")
@@ -77,13 +72,13 @@ export function testPassword(address: string, password: string) {
 }
 
 // returns the index of the stored wallets
-export function getWalletIndex(enriched:Boolean = true): WalletIndex[] {  
+export function getWalletIndex(enriched: Boolean = true): WalletIndex[] {
   let wallets = JSON.parse(localStorage.getItem(KEY_TAG + '-index') || '[]')
-  if(enriched){
+  if (enriched) {
     // add network data to index
-    return wallets.map((wallet:WalletIndex) => {
+    return wallets.map((wallet: WalletIndex) => {
       const walletData = loadFromStorage(wallet.address)
-      if(walletData && walletData.network){
+      if (walletData && walletData.network) {
         // enrich with network data
         wallet.network = walletData.network
       }
