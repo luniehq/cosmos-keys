@@ -44,8 +44,8 @@ export function storeWallet(
     throw new Error("The wallet was already stored. Can't store the same wallet again.")
   }
 
-  const ciphertext = encrypt(JSON.stringify(wallet), password)
-  addToStorage(name, wallet.cosmosAddress, ciphertext, network)
+  const encryptedWallet = encrypt(JSON.stringify(wallet), password)
+  addToStorage(name, wallet.cosmosAddress, encryptedWallet, network)
 }
 
 // store a wallet encrypted in localstorage
@@ -103,13 +103,13 @@ function loadFromStorage(address: string): StoredWallet | null {
 }
 
 // stores an encrypted wallet in localstorage
-function addToStorage(name: string, address: string, ciphertext: string, network: string): void {
-  addToIndex(name, address)
+function addToStorage(name: string, address: string, wallet: string, network: string): void {
+  addToIndex(name, address, wallet)
 
   const storedWallet: StoredWallet = {
     name,
     address,
-    wallet: ciphertext,
+    wallet,
     network
   }
 
@@ -123,14 +123,14 @@ function removeFromStorage(address: string): void {
 }
 
 // stores the names of the keys to prevent name collision
-function addToIndex(name: string, address: string): void {
+function addToIndex(name: string, address: string, wallet: string): void {
   const storedIndex = getWalletIndex(false)
 
   if (storedIndex.find(({ name: storedName }) => name === storedName)) {
     throw new Error(`Key with that name already exists`)
   }
 
-  storedIndex.push({ name, address })
+  storedIndex.push({ name, address, wallet })
   localStorage.setItem(KEY_TAG + '-index', JSON.stringify(storedIndex))
 }
 
@@ -158,7 +158,7 @@ function encrypt(message: string, password: string): string {
   })
 
   // salt, iv will be hex 32 in length
-  // append them to the ciphertext for use  in decryption
+  // append them to the encrypted wallet for use  in decryption
   const transitmessage = salt.toString() + iv.toString() + encrypted.toString()
   return transitmessage
 }
