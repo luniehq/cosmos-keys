@@ -42,7 +42,7 @@ export function getNewWalletFromSeed(
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
-    cosmosAddress
+    cosmosAddress,
   }
 }
 
@@ -89,19 +89,19 @@ function deriveKeypair(masterKey: bip32.BIP32Interface, hdPath: string): KeyPair
 
   return {
     privateKey,
-    publicKey
+    publicKey,
   }
 }
 
-export function derivePublicFromPrivateKey(privateKey: Buffer, bech32Prefix: string,): String {
+export function derivePublicFromPrivateKey(privateKey: Buffer, bech32Prefix: string): String {
   const publicKey = secp256k1.publicKeyCreate(privateKey, true)
   const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
   return cosmosAddress
 }
 // Just trying stuff
-const buffer = new Buffer(`4c06ff6a11c159b7777d54033c40ff30672227a84e89fb87f261f16a7c2a7407`)
-const recoveredAddress = derivePublicFromPrivateKey(buffer, `terra`)
-console.log(recoveredAddress)
+// const buffer = new Buffer(`4c06ff6a11c159b7777d54033c40ff30672227a84e89fb87f261f16a7c2a7407`)
+// const recoveredAddress = derivePublicFromPrivateKey(buffer, `terra`)
+// console.log(recoveredAddress)
 
 // converts a string to a bech32 version of that string which shows a type and has a checksum
 function bech32ify(address: string, prefix: string) {
