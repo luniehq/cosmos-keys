@@ -99,7 +99,7 @@ export function derivePublicFromPrivateKey(privateKey: Buffer, bech32Prefix: str
   return cosmosAddress
 }
 // Just trying stuff
-// const buffer = new Buffer(`4c06ff6a11c159b7777d54033c40ff30672227a84e89fb87f261f16a7c2a7407`)
+// const buffer = Buffer.from(`4c06ff6a11c159b7777d54033c40ff30672227a84e89fb87f261f16a7c2a7407`, `hex`)
 // const recoveredAddress = derivePublicFromPrivateKey(buffer, `terra`)
 // console.log(recoveredAddress)
 
