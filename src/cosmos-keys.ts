@@ -93,7 +93,7 @@ function deriveKeypair(masterKey: bip32.BIP32Interface, hdPath: string): KeyPair
   }
 }
 
-export function derivePublicFromPrivateKey(privateKey: Buffer, bech32Prefix: string): String {
+export function deriveAddressFromPrivateKey(privateKey: Buffer, bech32Prefix: string): String {
   const publicKey = secp256k1.publicKeyCreate(privateKey, true)
   const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
   return cosmosAddress
