@@ -33,12 +33,14 @@ describe(`Key Generation`, () => {
     expect(await getNewWalletFromSeed(`a b c`, 'cosmos')).toEqual({
       cosmosAddress: `cosmos1pt9904aqg739q6p9kgc2v0puqvj6atp0zsj70g`,
       privateKey: `a9f1c24315bf0e366660a26c5819b69f242b5d7a293fc5a3dec8341372544be8`,
-      publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`
+      publicKey: `037a525043e79a9051d58214a9a2a70b657b3d49124dcd0acc4730df5f35d74b32`,
+      seedPhrase: `a b c`
     })
     expect(await getNewWalletFromSeed(`a b c`, 'mesgtest', "44'/470'/0'/0/0")).toEqual({
       cosmosAddress: `mesgtest1wna6lpw7e2yv9u2vxw4zl5vg223yf56fuadzsa`,
       privateKey: `bab0764add9eaa7a9a61fdb61c3cd80404bf912543079fe6edcb36ec3b9c21d7`,
-      publicKey: `02eb47a78f460f91a481ddfdf5f5fa7979389d7c994e92e58d9f2b88af2dcf1866`
+      publicKey: `02eb47a78f460f91a481ddfdf5f5fa7979389d7c994e92e58d9f2b88af2dcf1866`,
+      seedPhrase: `a b c`
     })
   })
 
@@ -72,7 +74,8 @@ describe(`Key Generation`, () => {
     ).toEqual({
       cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
       privateKey: `8088c2ed2149c34f6d6533b774da4e1692eb5cb426fdbaef6898eeda489630b7`,
-      publicKey: `02ba66a84cf7839af172a13e7fc9f5e7008cb8bca1585f8f3bafb3039eda3c1fdd`
+      publicKey: `02ba66a84cf7839af172a13e7fc9f5e7008cb8bca1585f8f3bafb3039eda3c1fdd`,
+      seedPhrase: expect.stringContaining('')
     })
   })
 

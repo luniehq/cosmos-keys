@@ -6,6 +6,7 @@ export interface Wallet {
   privateKey: string
   publicKey: string
   cosmosAddress: string
+  seedPhrase: string
 }
 export interface StoredWallet {
   name: string

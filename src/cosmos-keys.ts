@@ -42,7 +42,8 @@ export function getNewWalletFromSeed(
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
-    cosmosAddress
+    cosmosAddress,
+    seedPhrase: mnemonic
   }
 }
 
