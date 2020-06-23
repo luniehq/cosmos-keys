@@ -3,7 +3,7 @@ import {
   getStoredWallet,
   storeWallet,
   removeWallet,
-  getWalletIndex
+  getWalletIndex,
 } from '../src/cosmos-keystore'
 
 const mockWallet = {
@@ -11,16 +11,16 @@ const mockWallet = {
   seedPhrase: `abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art`,
   privateKey: `8088c2ed2149c34f6d6533b774da4e1692eb5cb426fdbaef6898eeda489630b7`,
   publicKey: `02ba66a84cf7839af172a13e7fc9f5e7008cb8bca1585f8f3bafb3039eda3c1fdd`,
-  network: `cosmos-hub-testnet`
+  network: `cosmos-hub-testnet`,
 }
 const mockWallet2 = Object.assign({}, mockWallet, {
-  cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mh2`
+  cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mh2`,
 })
 const mockWallet3 = Object.assign({}, mockWallet, {
-  cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mh3`
+  cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mh3`,
 })
 const mockWallet4 = Object.assign({}, mockWallet, {
-  cosmosAddress: `xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`
+  cosmosAddress: `xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`,
 })
 
 describe(`Keystore`, () => {
@@ -53,16 +53,16 @@ describe(`Keystore`, () => {
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
       {
         name: `mock-name`,
-        address: mockWallet.cosmosAddress
+        address: mockWallet.cosmosAddress,
       },
       {
         name: `mock-name2`,
-        address: mockWallet2.cosmosAddress
+        address: mockWallet2.cosmosAddress,
       },
       {
         name: `mock-name3`,
-        address: mockWallet3.cosmosAddress
-      }
+        address: mockWallet3.cosmosAddress,
+      },
     ])
   })
 
@@ -73,8 +73,8 @@ describe(`Keystore`, () => {
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
       {
         name: `mock-name`,
-        address: mockWallet.cosmosAddress
-      }
+        address: mockWallet.cosmosAddress,
+      },
     ])
   })
 
@@ -121,8 +121,8 @@ describe(`Keystore`, () => {
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
       {
         name: `mock-name2`,
-        address: mockWallet2.cosmosAddress
-      }
+        address: mockWallet2.cosmosAddress,
+      },
     ])
   })
 
@@ -146,8 +146,8 @@ describe(`Keystore`, () => {
       {
         address: mockWallet2.cosmosAddress,
         name: 'mock-name2',
-        network: 'regen-testnet'
-      }
+        network: 'regen-testnet',
+      },
     ]
     expect(wallets).toEqual(expect.arrayContaining(expectedValue))
   })
