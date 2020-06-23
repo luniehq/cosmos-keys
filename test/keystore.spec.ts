@@ -1,4 +1,10 @@
-import { testPassword, getStoredWallet, storeWallet, removeWallet, getWalletIndex } from '../src/cosmos-keystore'
+import {
+  testPassword,
+  getStoredWallet,
+  storeWallet,
+  removeWallet,
+  getWalletIndex
+} from '../src/cosmos-keystore'
 
 const mockWallet = {
   cosmosAddress: `cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`,
@@ -34,7 +40,9 @@ describe(`Keystore`, () => {
     expect(
       localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`)
     ).toBeDefined()
-    const wallet = JSON.parse(localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`) || '{}')
+    const wallet = JSON.parse(
+      localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`) || '{}'
+    )
     expect(wallet.network).toEqual('regen-testnet')
   })
 
@@ -134,11 +142,13 @@ describe(`Keystore`, () => {
     storeWallet(mockWallet3, 'mock-name3', 'mock-password', 'regen-testnet')
     // get enriched version
     const wallets = getWalletIndex()
-    const expectedValue = [{
-      address: mockWallet2.cosmosAddress,
-      name: 'mock-name2',
-      network: 'regen-testnet'
-    }]
+    const expectedValue = [
+      {
+        address: mockWallet2.cosmosAddress,
+        name: 'mock-name2',
+        network: 'regen-testnet'
+      }
+    ]
     expect(wallets).toEqual(expect.arrayContaining(expectedValue))
   })
 })
