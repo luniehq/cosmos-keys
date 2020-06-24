@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.2.2] - 2020-05-10
+
+### Changed
+
+- [#34](https://github.com/cosmos/lunie/pull/34) Switch to bcrypt for node compatibility @faustbrian
+
 ## [0.2.1] - 2020-01-29
 
 ### Changed

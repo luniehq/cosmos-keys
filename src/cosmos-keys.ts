@@ -43,6 +43,7 @@ export function getNewWalletFromSeed(
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
     cosmosAddress,
+    seedPhrase: mnemonic,
   }
 }
 
