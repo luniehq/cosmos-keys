@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.2.3] - 2020-06-24
+
+### Added
+
+- [#73](https://github.com/cosmos/lunie/pull/73) Adds the dependabot config for the repo @Bitcoinera
+- [#76](https://github.com/cosmos/lunie/pull/76) Adds a function to derive a Tendermint address from its private key @Bitcoinera
+- Store seed phrase @faboweb
+
+### Changed
+
+- [#73](https://github.com/cosmos/lunie/pull/73) Changes the script name for changelog to changelog @Bitcoinera
+
 ## [0.2.2] - 2020-05-10
 
 ### Changed
