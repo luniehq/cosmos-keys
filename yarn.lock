@@ -6125,10 +6125,10 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==
 
-simsala@0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/simsala/-/simsala-0.0.21.tgz#92c3b27033bd54efa472cb45b3a8ac453891bb82"
-  integrity sha512-/Nti+CK8+vvvHgTyIXVkjEF30XYl3GsERZ5Nmd/dEjPchLcgtGN9aheQ1W9XL0jM05NxeyT3IY1NVtuSquhHqw==
+simsala@0.0.22:
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/simsala/-/simsala-0.0.22.tgz#b7e85786b9d02ed53f6163e5cc7d3c8f3a616636"
+  integrity sha512-uJL8KVFeHf0XuTtRO1pgaVKX96caBhFNh4Qjs8jGbgUBxUzcBtZkxLXGpOSP3J2FrFP+lSm5LtVmhk/sKBJ3Fw==
   dependencies:
     axios "^0.18.0"
     commander "^2.20.0"
