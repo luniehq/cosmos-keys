@@ -42,7 +42,8 @@ export function getNewWalletFromSeed(
   return {
     privateKey: privateKey.toString('hex'),
     publicKey: publicKey.toString('hex'),
-    cosmosAddress
+    cosmosAddress,
+    seedPhrase: mnemonic,
   }
 }
 
@@ -89,8 +90,14 @@ function deriveKeypair(masterKey: bip32.BIP32Interface, hdPath: string): KeyPair
 
   return {
     privateKey,
-    publicKey
+    publicKey,
   }
+}
+
+export function deriveAddressFromPrivateKey(privateKey: Buffer, bech32Prefix: string): String {
+  const publicKey = secp256k1.publicKeyCreate(privateKey, true)
+  const cosmosAddress = getCosmosAddress(publicKey, bech32Prefix)
+  return cosmosAddress
 }
 
 // converts a string to a bech32 version of that string which shows a type and has a checksum
