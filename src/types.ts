@@ -13,6 +13,7 @@ export interface StoredWallet {
   address: string
   wallet: string // encrypted wallet
   network: string
+  algo: string
 }
 export interface WalletIndex {
   name: string
