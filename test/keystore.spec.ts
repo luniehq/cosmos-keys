@@ -29,14 +29,14 @@ describe(`Keystore`, () => {
   })
 
   it(`stores a wallet`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     expect(
       localStorage.getItem(`cosmos-wallets-cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`)
     ).toBeDefined()
   })
 
   it(`check if network is set`, () => {
-    storeWallet(mockWallet4, 'mock-name4', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet4, 'mock-name4', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     expect(
       localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`)
     ).toBeDefined()
@@ -47,9 +47,9 @@ describe(`Keystore`, () => {
   })
 
   it(`stores a collection of wallet names to prevent name collision`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    storeWallet(mockWallet3, 'mock-name3', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    storeWallet(mockWallet3, 'mock-name3', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
       {
         name: `mock-name`,
@@ -67,8 +67,10 @@ describe(`Keystore`, () => {
   })
 
   it(`prevents you from adding a wallet with the same name twice`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    expect(() => storeWallet(mockWallet2, 'mock-name', 'mock-password2', 'regen-testnet', 'cosmosStandard')).toThrow()
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    expect(() =>
+      storeWallet(mockWallet2, 'mock-name', 'mock-password2', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    ).toThrow()
 
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
       {
@@ -79,7 +81,7 @@ describe(`Keystore`, () => {
   })
 
   it(`loads a stored wallet`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     const key = getStoredWallet(mockWallet.cosmosAddress, 'mock-password')
     expect(key.privateKey).toBe(mockWallet.privateKey)
   })
@@ -89,12 +91,12 @@ describe(`Keystore`, () => {
   })
 
   it(`signals if the password for the stored wallet is incorrect`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     expect(() => getStoredWallet(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
   })
 
   it(`tests if a password is correct for a localy stored key`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     expect(() => testPassword(mockWallet.cosmosAddress, 'mock-password')).not.toThrow()
     expect(() => testPassword(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
   })
@@ -104,18 +106,22 @@ describe(`Keystore`, () => {
   })
 
   it(`prevents you from overwriting existing key names`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    expect(() => storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')).toThrow()
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    expect(() =>
+      storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    ).toThrow()
   })
 
   it(`prevents you from overwriting existing wallets`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    expect(() => storeWallet(mockWallet, 'mock-name2', 'mock-password', 'regen-testnet', 'cosmosStandard')).toThrow()
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    expect(() =>
+      storeWallet(mockWallet, 'mock-name2', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    ).toThrow()
   })
 
   it(`removes a wallet`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     removeWallet(mockWallet.cosmosAddress, 'mock-password')
     expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).toThrow()
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
@@ -127,7 +133,7 @@ describe(`Keystore`, () => {
   })
 
   it(`throws if the password for a wallet while removing is incorrect`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     expect(() => removeWallet(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
     expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).not.toThrow()
   })
@@ -137,9 +143,9 @@ describe(`Keystore`, () => {
   })
 
   it(`store index data and enrich it with network data`, () => {
-    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet', 'cosmosStandard')
-    storeWallet(mockWallet3, 'mock-name3', 'mock-password', 'regen-testnet', 'cosmosStandard')
+    storeWallet(mockWallet, 'mock-name', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    storeWallet(mockWallet2, 'mock-name2', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
+    storeWallet(mockWallet3, 'mock-name3', 'mock-password', 'regen-testnet', `m/44'/118'/0'/0/0`, 'ed25519')
     // get enriched version
     const wallets = getWalletIndex()
     const expectedValue = [
