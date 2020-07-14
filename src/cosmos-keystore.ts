@@ -38,8 +38,8 @@ export function storeWallet(
   name: string,
   password: string,
   network: string,
-  HDPath: string,
-  curve: string
+  HDPath: string = `m/44'/118'/0'/0/0`, // default
+  curve: string = `ed25519` // default
 ): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
