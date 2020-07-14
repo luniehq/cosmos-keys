@@ -39,7 +39,7 @@ export function storeWallet(
   password: string,
   network: string,
   HDPath: string,
-  curve: string,
+  curve: string
 ): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
@@ -79,13 +79,13 @@ export function testPassword(address: string, password: string) {
 }
 
 // returns the index of the stored wallets
-export function getWalletIndex(enriched:Boolean = true): WalletIndex[] {  
+export function getWalletIndex(enriched: Boolean = true): WalletIndex[] {
   let wallets = JSON.parse(localStorage.getItem(KEY_TAG + '-index') || '[]')
-  if(enriched){
+  if (enriched) {
     // add network data to index
-    return wallets.map((wallet:WalletIndex) => {
+    return wallets.map((wallet: WalletIndex) => {
       const walletData = loadFromStorage(wallet.address)
-      if(walletData && walletData.network){
+      if (walletData && walletData.network) {
         // enrich with network data
         wallet.network = walletData.network
       }
@@ -105,7 +105,14 @@ function loadFromStorage(address: string): StoredWallet | null {
 }
 
 // stores an encrypted wallet in localstorage
-function addToStorage(name: string, address: string, ciphertext: string, network: string, HDPath: string, curve: string): void {
+function addToStorage(
+  name: string,
+  address: string,
+  ciphertext: string,
+  network: string,
+  HDPath: string,
+  curve: string
+): void {
   addToIndex(name, address)
 
   const storedWallet: StoredWallet = {
@@ -150,7 +157,7 @@ function encrypt(message: string, password: string): string {
 
   const key = CryptoJS.PBKDF2(password, salt, {
     keySize: keySize / 32,
-    iterations: iterations
+    iterations: iterations,
   })
 
   const iv = CryptoJS.lib.WordArray.random(128 / 8)
@@ -158,7 +165,7 @@ function encrypt(message: string, password: string): string {
   const encrypted = CryptoJS.AES.encrypt(message, key, {
     iv: iv,
     padding: CryptoJS.pad.Pkcs7,
-    mode: CryptoJS.mode.CBC
+    mode: CryptoJS.mode.CBC,
   })
 
   // salt, iv will be hex 32 in length
@@ -174,13 +181,13 @@ function decrypt(transitMessage: string, password: string): string {
 
   const key = CryptoJS.PBKDF2(password, salt, {
     keySize: keySize / 32,
-    iterations: iterations
+    iterations: iterations,
   })
 
   const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
     iv: iv,
     padding: CryptoJS.pad.Pkcs7,
-    mode: CryptoJS.mode.CBC
+    mode: CryptoJS.mode.CBC,
   }).toString(CryptoJS.enc.Utf8)
   return decrypted
 }
