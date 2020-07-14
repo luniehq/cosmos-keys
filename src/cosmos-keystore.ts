@@ -38,7 +38,8 @@ export function storeWallet(
   name: string,
   password: string,
   network: string,
-  accountType: string,
+  HDPath: string,
+  curve: string,
 ): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
@@ -46,7 +47,7 @@ export function storeWallet(
   }
 
   const ciphertext = encrypt(JSON.stringify(wallet), password)
-  addToStorage(name, wallet.cosmosAddress, ciphertext, network, accountType)
+  addToStorage(name, wallet.cosmosAddress, ciphertext, network, HDPath, curve)
 }
 
 // store a wallet encrypted in localstorage
@@ -104,7 +105,7 @@ function loadFromStorage(address: string): StoredWallet | null {
 }
 
 // stores an encrypted wallet in localstorage
-function addToStorage(name: string, address: string, ciphertext: string, network: string, accountType: string): void {
+function addToStorage(name: string, address: string, ciphertext: string, network: string, HDPath: string, curve: string): void {
   addToIndex(name, address)
 
   const storedWallet: StoredWallet = {
@@ -112,7 +113,8 @@ function addToStorage(name: string, address: string, ciphertext: string, network
     address,
     wallet: ciphertext,
     network,
-    accountType,
+    HDPath,
+    curve,
   }
 
   localStorage.setItem(KEY_TAG + '-' + address, JSON.stringify(storedWallet))

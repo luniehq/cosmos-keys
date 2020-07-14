@@ -13,7 +13,8 @@ export interface StoredWallet {
   address: string
   wallet: string // encrypted wallet
   network: string
-  accountType: string
+  HDPath: string
+  curve: string
 }
 export interface WalletIndex {
   name: string
