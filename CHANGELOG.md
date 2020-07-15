@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.2.4] - 2020-07-15
+
+### Changed
+
+- [#86](https://github.com/cosmos/lunie/pull/86) Store accountType/algo in StoredWallet @Bitcoinera
+
 ## [0.2.3] - 2020-06-24
 
 ### Added
