@@ -32,7 +32,8 @@ const seed = ...24 seed words here
 //bech32prefix   
 
 const bech32prefix = 'cosmos';
-const { cosmosAddress, privateKey, publicKey } = getNewWalletFromSeed(seed,bech32prefix)
+const { cosmosAddress, privateKey, publicKey } = getNewWalletFromSeed(seed, bech32prefix)
+
 // Attention: protect the `privateKey` at all cost and never display it anywhere!!
 ```
 
