@@ -88,6 +88,8 @@ export function getWalletIndex(enriched: Boolean = true): WalletIndex[] {
       if (walletData && walletData.network) {
         // enrich with network data
         wallet.network = walletData.network
+        wallet.HDPath = walletData.HDPath
+        wallet.curve = walletData.curve
       }
       return wallet
     })

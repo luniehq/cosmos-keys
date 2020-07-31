@@ -293,6 +293,8 @@ describe(`Keystore`, () => {
         address: mockWallet2.cosmosAddress,
         name: 'mock-name2',
         network: 'regen-testnet',
+        HDPath: "m/44'/118'/0'/0/0",
+        curve: 'ed25519'
       },
     ]
     expect(wallets).toEqual(expect.arrayContaining(expectedValue))
