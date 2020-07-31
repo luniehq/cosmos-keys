@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.3.1] - 2020-07-31
+
+### Changed
+
+- [#89](https://github.com/cosmos/lunie/pull/89) GetWalletIndex returns HDPath and curve when enriched @Bitcoinera
+
 ## [0.3.0] - 2020-07-15
 
 ### Changed
