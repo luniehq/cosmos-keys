@@ -35,7 +35,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(
       localStorage.getItem(`cosmos-wallets-cosmos1r5v5srda7xfth3hn2s26txvrcrntldjumt8mhl`)
@@ -49,7 +50,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(
       localStorage.getItem(`cosmos-wallets-xrn:1h0y77r8ee28hs0wqg9css7rzegmagaamwl6rdp`)
@@ -67,7 +69,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     storeWallet(
       mockWallet2,
@@ -75,7 +78,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     storeWallet(
       mockWallet3,
@@ -83,7 +87,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(JSON.parse(localStorage.getItem(`cosmos-wallets-index`) || '[]')).toEqual([
       {
@@ -108,7 +113,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(() =>
       storeWallet(
@@ -117,7 +123,8 @@ describe(`Keystore`, () => {
         'mock-password2',
         'regen-testnet',
         `m/44'/118'/0'/0/0`,
-        'ed25519'
+        'ed25519',
+        'none'
       )
     ).toThrow()
 
@@ -136,7 +143,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     const key = getStoredWallet(mockWallet.cosmosAddress, 'mock-password')
     expect(key.privateKey).toBe(mockWallet.privateKey)
@@ -153,7 +161,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(() => getStoredWallet(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
   })
@@ -165,7 +174,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(() => testPassword(mockWallet.cosmosAddress, 'mock-password')).not.toThrow()
     expect(() => testPassword(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
@@ -182,7 +192,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(() =>
       storeWallet(
@@ -191,7 +202,8 @@ describe(`Keystore`, () => {
         'mock-password',
         'regen-testnet',
         `m/44'/118'/0'/0/0`,
-        'ed25519'
+        'ed25519',
+        'none'
       )
     ).toThrow()
   })
@@ -203,7 +215,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(() =>
       storeWallet(
@@ -212,7 +225,8 @@ describe(`Keystore`, () => {
         'mock-password',
         'regen-testnet',
         `m/44'/118'/0'/0/0`,
-        'ed25519'
+        'ed25519',
+        'none'
       )
     ).toThrow()
   })
@@ -224,7 +238,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     storeWallet(
       mockWallet2,
@@ -232,7 +247,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     removeWallet(mockWallet.cosmosAddress, 'mock-password')
     expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).toThrow()
@@ -251,7 +267,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     expect(() => removeWallet(mockWallet.cosmosAddress, 'wrong-password')).toThrow()
     expect(() => getStoredWallet(mockWallet.cosmosAddress, 'mock-password')).not.toThrow()
@@ -268,7 +285,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     storeWallet(
       mockWallet2,
@@ -276,7 +294,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     storeWallet(
       mockWallet3,
@@ -284,7 +303,8 @@ describe(`Keystore`, () => {
       'mock-password',
       'regen-testnet',
       `m/44'/118'/0'/0/0`,
-      'ed25519'
+      'ed25519',
+      'none'
     )
     // get enriched version
     const wallets = getWalletIndex()
@@ -294,7 +314,8 @@ describe(`Keystore`, () => {
         name: 'mock-name2',
         network: 'regen-testnet',
         HDPath: "m/44'/118'/0'/0/0",
-        curve: 'ed25519'
+        curve: 'ed25519',
+        addressRole: 'none'
       },
     ]
     expect(wallets).toEqual(expect.arrayContaining(expectedValue))

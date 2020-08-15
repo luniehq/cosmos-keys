@@ -39,7 +39,8 @@ export function storeWallet(
   password: string,
   network: string,
   HDPath: string = `m/44'/118'/0'/0/0`, // default
-  curve: string = `ed25519` // default
+  curve: string = `ed25519`, // default
+  addressRole: string = `none`, // default
 ): void {
   const storedWallet = loadFromStorage(wallet.cosmosAddress)
   if (storedWallet) {
@@ -47,7 +48,7 @@ export function storeWallet(
   }
 
   const ciphertext = encrypt(JSON.stringify(wallet), password)
-  addToStorage(name, wallet.cosmosAddress, ciphertext, network, HDPath, curve)
+  addToStorage(name, wallet.cosmosAddress, ciphertext, network, HDPath, curve, addressRole)
 }
 
 // store a wallet encrypted in localstorage
@@ -90,6 +91,7 @@ export function getWalletIndex(enriched: Boolean = true): WalletIndex[] {
         wallet.network = walletData.network
         wallet.HDPath = walletData.HDPath
         wallet.curve = walletData.curve
+        wallet.addressRole = walletData.addressRole
       }
       return wallet
     })
@@ -113,7 +115,8 @@ function addToStorage(
   ciphertext: string,
   network: string,
   HDPath: string,
-  curve: string
+  curve: string,
+  addressRole: string
 ): void {
   addToIndex(name, address)
 
@@ -124,6 +127,7 @@ function addToStorage(
     network,
     HDPath,
     curve,
+    addressRole
   }
 
   localStorage.setItem(KEY_TAG + '-' + address, JSON.stringify(storedWallet))

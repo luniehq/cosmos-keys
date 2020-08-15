@@ -15,6 +15,7 @@ export interface StoredWallet {
   network: string
   HDPath: string
   curve: string
+  addressRole: string
 }
 export interface WalletIndex {
   name: string
@@ -22,6 +23,7 @@ export interface WalletIndex {
   network?: string // not stored, but enriched with
   HDPath?: string // not stored, but enriched with
   curve?: string // not stored, but enriched with
+  addressRole?: string // not stored, but enriched with
 }
 export interface Coin {
   denom: string
