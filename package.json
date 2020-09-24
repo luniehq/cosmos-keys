@@ -1,6 +1,6 @@
 {
   "name": "@lunie/cosmos-keys",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "js version of cosmos wallet signer and address generation",
   "keywords": [
     "cosmos",
