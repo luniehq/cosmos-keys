@@ -1,6 +1,6 @@
 {
   "name": "@lunie/cosmos-keys",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "js version of cosmos wallet signer and address generation",
   "keywords": [
     "cosmos",
@@ -105,7 +105,7 @@
     "simsala": "0.0.22",
     "ts-jest": "^24.1.0",
     "ts-loader": "^7.0.4",
-    "ts-node": "^8.10.1",
+    "ts-node": "^9.0.0",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^9.0.0",
