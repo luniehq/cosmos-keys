@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- SIMSALA --> <!-- DON'T DELETE, used for automatic changelog updates -->
 
+## [0.3.2] - 2020-09-24
+
+### Changed
+
+- [#125](https://github.com/cosmos/lunie/pull/125) Export the removeFromStorage function @Bitcoinera
+
 ## [0.3.1] - 2020-07-31
 
 ### Changed
