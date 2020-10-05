@@ -130,7 +130,7 @@ function addToStorage(
 }
 
 // removed a wallet from localstorage
-function removeFromStorage(address: string): void {
+export function removeFromStorage(address: string): void {
   removeFromIndex(address)
   localStorage.removeItem(KEY_TAG + '-' + address)
 }
