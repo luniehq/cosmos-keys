@@ -16,6 +16,11 @@ export interface StoredWallet {
   HDPath: string
   curve: string
 }
+export interface StoredSeed {
+  name: string
+  //email TODO
+  seed: string
+}
 export interface WalletIndex {
   name: string
   address: string
